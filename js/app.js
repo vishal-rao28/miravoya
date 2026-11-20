@@ -2234,6 +2234,11 @@
       openFullGuide
     });
 
+    // Init Master Travel Vault & Profile Sync Engine
+    window.Miravoya.vault = window.Miravoya.initVault?.({
+      notify
+    });
+
     initTravelPreloaderAndScrollPlane();
     initInteractivePolish();
     initSpotlightCommandPalette();
@@ -2337,6 +2342,41 @@
     );
 
     const quickActions = [
+      {
+        icon: '💼',
+        title: 'Open Master Travel Vault & Profile',
+        sub: 'Export/import data, view traveler rank XP, and sync across devices',
+        keywords: 'vault backup restore export import sync profile rank xp cloud json',
+        run: () => window.Miravoya.vault?.openVault()
+      },
+      {
+        icon: '🌊',
+        title: 'Ambient Soundscape: Ocean Waves',
+        sub: 'Relaxing coastal ocean surf soundscape (Web Audio)',
+        keywords: 'sound audio ambient ocean sea waves relax music noise',
+        run: () => document.querySelector('[data-sound-mode="ocean"]')?.click()
+      },
+      {
+        icon: '🌧️',
+        title: 'Ambient Soundscape: Monsoon Rain',
+        sub: 'Peaceful rain soundscape for cozy trip planning',
+        keywords: 'sound audio ambient rain monsoon storm cozy noise',
+        run: () => document.querySelector('[data-sound-mode="rain"]')?.click()
+      },
+      {
+        icon: '🏔️',
+        title: 'Ambient Soundscape: Alpine Wind',
+        sub: 'Gentle mountain breeze soundscape',
+        keywords: 'sound audio ambient wind mountain alpine nature noise',
+        run: () => document.querySelector('[data-sound-mode="mountain"]')?.click()
+      },
+      {
+        icon: '🔇',
+        title: 'Mute Ambient Soundscape',
+        sub: 'Turn off background travel audio',
+        keywords: 'sound audio mute stop quiet silence off',
+        run: () => document.querySelector('[data-sound-mode="off"]')?.click()
+      },
       {
         icon: '🌤️',
         title: 'Open Destination Weather & Trip Planner',

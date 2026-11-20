@@ -187,9 +187,32 @@
         <a class="nav-link" href="#roadmap-section">Roadmap</a>
         <a class="nav-link" href="#toolkit-section">Companion</a>
         <a class="nav-link" href="#power-tools-section">🚗 Road Trips &amp; Split</a>
+        <button type="button" class="nav-link nav-vault-trigger" id="nav-vault-link" style="background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font:inherit;">
+          <span>💼</span> Travel Vault
+        </button>
       </nav>
 
       <div class="nav-actions">
+        <!-- Live Offline / Online Sync Status Pill -->
+        <div id="vault-sync-indicator" class="sync-status-pill online" title="Miravoya Offline PWA Ready · All data synced in local vault">
+          <span class="sync-dot"></span>
+          <span id="sync-status-text" class="sync-text">Live Synced</span>
+        </div>
+
+        <!-- Ambient Nature Soundscape Bar -->
+        <div class="ambient-sound-group" id="ambient-sound-group" title="Ambient Travel Soundscape (Ocean Waves, Alpine Wind, Monsoon Rain)">
+          <span class="ambient-label">🎧</span>
+          <button type="button" class="sound-mode-btn" data-sound-mode="ocean" title="Ocean Waves (Calm Shore)">🌊</button>
+          <button type="button" class="sound-mode-btn" data-sound-mode="mountain" title="Alpine Wind (Mountain Peak)">🏔️</button>
+          <button type="button" class="sound-mode-btn" data-sound-mode="rain" title="Monsoon Rain (Cozy Shelter)">🌧️</button>
+          <button type="button" class="sound-mode-btn is-active" data-sound-mode="off" title="Mute Ambient Audio">🔇</button>
+        </div>
+
+        <!-- Open Travel Vault Button -->
+        <button type="button" id="open-vault-btn" class="btn btn-sm btn-vault" title="Open Miravoya Travel Vault (Profile, Backups &amp; Sync)">
+          <span>💼</span> Vault
+        </button>
+
         <div class="atmosphere-switcher" role="group" aria-label="Switch living travel atmosphere theme">
           <button type="button" class="atmo-dot is-active" data-set-theme="horizon" data-label="🌅 Horizon"
             title="Golden Horizon (Warm Daylight)"></button>
@@ -1173,6 +1196,152 @@
   </footer>
 
   <!-- ======================================================================
+       MIRAVOYA MASTER TRAVEL VAULT & EXPLORER PROFILE MODAL
+       ====================================================================== -->
+  <div id="vault-backdrop" class="vault-backdrop" role="dialog" aria-modal="true" aria-labelledby="vault-title">
+    <div class="vault-dialog">
+      <!-- Vault Hero Header -->
+      <div class="vault-hero">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;position:relative;z-index:2;">
+          <div>
+            <div class="vault-hero-badge">💼 Zero-Cloud Travel Vault &amp; Sync</div>
+            <h2 id="vault-title" style="margin:6px 0 4px;font-family:var(--font-serif);font-size:clamp(1.5rem,2.8vw,2rem);line-height:1.15;color:#ffffff;">
+              Miravoya Master Travel Vault
+            </h2>
+            <p style="margin:0;font-size:0.86rem;color:rgba(255,255,255,0.85);max-width:54ch;">
+              Your entire travel profile lives 100% inside your browser. Export universal backups, restore across devices, or sync via quick code.
+            </p>
+          </div>
+          <button type="button" id="vault-close-btn" class="icon-btn"
+            style="background:rgba(0,0,0,0.35);color:#fff;border-color:rgba(255,255,255,0.3);"
+            aria-label="Close vault dialog">✕</button>
+        </div>
+      </div>
+
+      <div class="vault-body">
+        <!-- Traveler Rank & XP Meter -->
+        <div class="vault-rank-card">
+          <div class="vault-rank-head">
+            <div>
+              <span style="font-size:0.75rem;font-family:var(--font-mono);color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em;">Traveler Status</span>
+              <div id="vault-rank-title" style="font-family:var(--font-serif);font-size:1.3rem;font-weight:700;color:var(--ink-primary);">
+                🌱 Curious Nomad
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span id="vault-rank-badge" class="vault-rank-badge">🥉 Level 1</span>
+              <span id="vault-xp-val" style="font-family:var(--font-mono);font-size:0.85rem;font-weight:700;color:var(--terracotta);">0 XP</span>
+            </div>
+          </div>
+          <div class="vault-progress-track" title="Explorer XP Progress">
+            <div id="vault-progress-fill" class="vault-progress-fill" style="width: 10%;"></div>
+          </div>
+        </div>
+
+        <!-- 5 Vault Metrics Tiles -->
+        <div class="vault-stats-grid">
+          <div class="vault-stat-tile">
+            <span class="vault-stat-val" id="vault-stat-trips">0</span>
+            <span class="vault-stat-lbl">✈️ Booked Passes</span>
+          </div>
+          <div class="vault-stat-tile">
+            <span class="vault-stat-val" id="vault-stat-roadmaps">0</span>
+            <span class="vault-stat-lbl">🗺️ Saved Roadmaps</span>
+          </div>
+          <div class="vault-stat-tile">
+            <span class="vault-stat-val" id="vault-stat-gear">0</span>
+            <span class="vault-stat-lbl">🎒 Gear Items</span>
+          </div>
+          <div class="vault-stat-tile">
+            <span class="vault-stat-val" id="vault-stat-expenses">0</span>
+            <span class="vault-stat-lbl">🧾 Group Bills</span>
+          </div>
+          <div class="vault-stat-tile">
+            <span class="vault-stat-val" id="vault-stat-memories">0</span>
+            <span class="vault-stat-lbl">📸 Polaroids</span>
+          </div>
+        </div>
+
+        <!-- 2 Side-by-Side Action Panels: Export & Import -->
+        <div class="vault-panels-grid">
+          <!-- Left Panel: Export & Quick Code -->
+          <div class="vault-panel-box">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:1.25rem;">💾</span>
+              <div>
+                <strong style="font-size:0.95rem;color:var(--ink-primary);display:block;">Backup &amp; Export</strong>
+                <span style="font-size:0.75rem;color:var(--ink-muted);">Save your complete travel universe</span>
+              </div>
+            </div>
+
+            <p style="margin:0;font-size:0.82rem;color:var(--ink-secondary);line-height:1.45;">
+              Download a single timestamped JSON file containing all booked flight passes, custom roadmaps, packing gear, split bills, and polaroid memories.
+            </p>
+
+            <button type="button" id="vault-export-btn" class="btn btn-primary" style="width:100%;height:38px;">
+              📥 Download Travel Vault (.json)
+            </button>
+
+            <div style="border-top:1px dashed var(--border-subtle);padding-top:10px;margin-top:2px;">
+              <span style="font-size:0.74rem;font-weight:700;color:var(--ink-secondary);display:block;margin-bottom:6px;">
+                📋 Fast Cross-Device Sync Code:
+              </span>
+              <button type="button" id="vault-copy-token-btn" class="btn btn-sm btn-teal" style="width:100%;height:34px;font-size:0.76rem;">
+                🔗 Copy Vault Sync Code to Clipboard
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Panel: Restore & File Drop -->
+          <div class="vault-panel-box">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:1.25rem;">📥</span>
+              <div>
+                <strong style="font-size:0.95rem;color:var(--ink-primary);display:block;">Restore &amp; Import</strong>
+                <span style="font-size:0.75rem;color:var(--ink-muted);">Load backup or transfer from phone</span>
+              </div>
+            </div>
+
+            <label id="vault-drop-zone" for="vault-file-input" class="vault-drop-zone">
+              <span style="font-size:1.6rem;display:block;margin-bottom:4px;">📂</span>
+              <strong style="font-size:0.82rem;color:var(--teal);display:block;">Click to browse or drop .json file</strong>
+              <span style="font-size:0.72rem;color:var(--ink-muted);">Auto-validates &amp; restores seamlessly</span>
+              <input type="file" id="vault-file-input" accept=".json,application/json" style="display:none;" />
+            </label>
+
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <span style="font-size:0.74rem;font-weight:700;color:var(--ink-secondary);">
+                Or Paste Sync Code:
+              </span>
+              <div class="vault-quick-code-box">
+                <input type="text" id="vault-paste-token" class="vault-code-input" placeholder="Paste encoded sync code here..." />
+                <button type="button" id="vault-restore-code-btn" class="btn btn-sm btn-primary" style="white-space:nowrap;height:38px;padding:0 12px;">Restore</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Curated Demo Pack & Clean Reset Strip -->
+        <div class="vault-danger-zone">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <button type="button" id="vault-load-demo-btn" class="btn btn-sm"
+              style="background:rgba(212,155,42,0.14);border-color:var(--gold);color:var(--ink-primary);font-weight:700;">
+              ✨ Load Sample "Dream Vacation" Pack
+            </button>
+            <span style="font-size:0.75rem;color:var(--ink-muted);">(Pre-fills Kyoto &amp; Ooty demo trips, roadmaps &amp; expenses)</span>
+          </div>
+
+          <button type="button" id="vault-reset-btn" class="mini-btn"
+            style="color:#dc2626;border-color:rgba(220,38,38,0.3);background:rgba(220,38,38,0.06);padding:6px 12px;border-radius:var(--radius-pill);font-size:0.74rem;"
+            title="Wipe local browser data and start fresh">
+            🗑️ Reset Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
        FULL DESTINATION DETAILS GUIDE MODAL
        ====================================================================== -->
   <div id="guide-backdrop" class="guide-backdrop" role="dialog" aria-modal="true" aria-labelledby="guide-title">
@@ -1610,7 +1779,8 @@
   <script defer src="js/innovations.js"></script>
   <script defer src="js/extras.js?v=6"></script>
   <script defer src="js/weather.js"></script>
-  <script defer src="js/app.js?v=20"></script>
+  <script defer src="js/vault.js?v=1"></script>
+  <script defer src="js/app.js?v=21"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

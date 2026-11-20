@@ -238,10 +238,14 @@ window.TerraVoyage.initInnovations = function initInnovations(helpers) {
       source = null;
       lfo = null;
       activeMode = null;
-      btns.forEach((b) => b.classList.remove('is-active'));
+      btns.forEach((b) => b.classList.toggle('is-active', b.dataset.soundMode === 'off'));
     }
 
     function startSound(mode) {
+      if (mode === 'off') {
+        stopSound();
+        return;
+      }
       stopSound();
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!ctx) ctx = new AudioCtx();
@@ -305,7 +309,7 @@ window.TerraVoyage.initInnovations = function initInnovations(helpers) {
     btns.forEach((btn) => {
       btn.addEventListener('click', () => {
         const mode = btn.dataset.soundMode;
-        if (activeMode === mode) {
+        if (mode === 'off' || activeMode === mode) {
           stopSound();
           notify('Ambient soundscape muted');
         } else {

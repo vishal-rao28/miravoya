@@ -1,0 +1,15 @@
+{
+  "name": "Miravoya — Global Travel Studio",
+  "short_name": "Miravoya",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1117",
+  "theme_color": "#0e5a6d",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

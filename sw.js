@@ -12,6 +12,7 @@ const CORE_ASSETS = [
   './robots.txt',
   './sitemap.xml',
   './opensearch.xml',
+  './google5266a10991396c47.html',
   './assets/favicon.svg',
   './assets/miravoya-social-card.png',
   './assets/miravoya-social-card.svg',

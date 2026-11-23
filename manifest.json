@@ -1,15 +1,28 @@
 {
-  "name": "Miravoya — Global Travel Studio",
+  "name": "Miravoya — Luxury Global Travel Studio & Route Architect",
   "short_name": "Miravoya",
+  "description": "Architectural travel studio covering Tamil Nadu, India, and 45+ world destinations with smart Trip DNA, supersonic avionics, and offline itinerary planning.",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#0b1117",
   "theme_color": "#0e5a6d",
+  "categories": [
+    "travel",
+    "navigation",
+    "lifestyle"
+  ],
   "icons": [
     {
       "src": "assets/favicon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/miravoya-social-card.png",
+      "sizes": "1200x630",
+      "type": "image/png"
     }
   ]
 }

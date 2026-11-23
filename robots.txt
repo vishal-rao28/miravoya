@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Canonical Sitemap for Miravoya Global Travel Studio
+Sitemap: https://vishal-rao28.github.io/miravoya/sitemap.xml

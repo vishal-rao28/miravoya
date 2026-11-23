@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="card-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#060b11" />
+      <stop offset="50%" stop-color="#0b1724" />
+      <stop offset="100%" stop-color="#07131e" />
+    </linearGradient>
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#f4be4f" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <linearGradient id="cyan-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7dd3fc" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+    <pattern id="card-grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#card-bg)" />
+  <rect width="1200" height="630" fill="url(#card-grid)" />
+
+  <!-- Outer Frames -->
+  <rect x="30" y="30" width="1140" height="570" rx="24" fill="none" stroke="rgba(244,190,79,0.35)" stroke-width="2" />
+  <rect x="38" y="38" width="1124" height="554" rx="18" fill="none" stroke="rgba(125,211,252,0.18)" stroke-width="1" />
+
+  <!-- Compass Star (Center at X:240, Y:315) -->
+  <g transform="translate(240, 315)">
+    <circle cx="0" cy="0" r="160" fill="none" stroke="rgba(244,190,79,0.15)" stroke-width="1" stroke-dasharray="4 4" />
+    <circle cx="0" cy="0" r="120" fill="none" stroke="rgba(244,190,79,0.3)" stroke-width="1.5" />
+    <circle cx="0" cy="0" r="85" fill="none" stroke="rgba(125,211,252,0.35)" stroke-width="1" />
+    <circle cx="0" cy="0" r="50" fill="none" stroke="rgba(244,190,79,0.5)" stroke-width="1.5" stroke-dasharray="3 3" />
+    <line x1="-170" y1="0" x2="170" y2="0" stroke="rgba(125,211,252,0.25)" stroke-width="1" />
+    <line x1="0" y1="-170" x2="0" y2="170" stroke="rgba(125,211,252,0.25)" stroke-width="1" />
+
+    <!-- Cardinal Star Points -->
+    <path d="M0 -115 L18 -22 L0 0 Z" fill="#fef08a" />
+    <path d="M0 -115 L-18 -22 L0 0 Z" fill="#eab308" />
+    <path d="M115 0 L22 18 L0 0 Z" fill="#f4be4f" />
+    <path d="M115 0 L22 -18 L0 0 Z" fill="#ca8a04" />
+    <path d="M0 115 L-18 22 L0 0 Z" fill="#d97706" />
+    <path d="M0 115 L18 22 L0 0 Z" fill="#b45309" />
+    <path d="M-115 0 L-22 -18 L0 0 Z" fill="#f4be4f" />
+    <path d="M-115 0 L-22 18 L0 0 Z" fill="#ca8a04" />
+
+    <!-- Ordinal Star Points -->
+    <path d="M55 -55 L16 -8 L0 0 Z" fill="#fef08a" opacity="0.85" />
+    <path d="M55 -55 L8 -16 L0 0 Z" fill="#ca8a04" opacity="0.85" />
+    <path d="M55 55 L8 16 L0 0 Z" fill="#f4be4f" opacity="0.85" />
+    <path d="M55 55 L16 8 L0 0 Z" fill="#b45309" opacity="0.85" />
+    <path d="M-55 55 L-16 8 L0 0 Z" fill="#d97706" opacity="0.85" />
+    <path d="M-55 55 L-8 16 L0 0 Z" fill="#b45309" opacity="0.85" />
+    <path d="M-55 -55 L-8 -16 L0 0 Z" fill="#fef08a" opacity="0.85" />
+    <path d="M-55 -55 L-16 -8 L0 0 Z" fill="#ca8a04" opacity="0.85" />
+
+    <circle cx="0" cy="0" r="14" fill="#072f3d" stroke="#f4be4f" stroke-width="2" />
+    <circle cx="0" cy="0" r="5" fill="#fef08a" />
+  </g>
+
+  <!-- Typography on the Right -->
+  <g transform="translate(470, 0)">
+    <!-- Pill -->
+    <rect x="0" y="115" width="540" height="36" rx="18" fill="rgba(14,90,109,0.35)" stroke="rgba(125,211,252,0.4)" stroke-width="1" />
+    <text x="24" y="139" fill="#7dd3fc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">✦ OFFICIAL GLOBAL TRAVEL STUDIO &amp; ROUTE ARCHITECT</text>
+
+    <!-- Brand Name -->
+    <text x="0" y="240" fill="url(#gold-grad)" font-family="Fraunces, Georgia, serif" font-size="82" font-weight="700" letter-spacing="-1">MIRAVOYA</text>
+
+    <!-- Subtitle -->
+    <text x="0" y="285" fill="#f1f5f9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="600">The Next-Generation Travel Explorer &amp; Trip DNA Studio</text>
+    <text x="0" y="320" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20">Tamil Nadu • India • 45+ Worldwide Destinations</text>
+
+    <!-- Chips Row 1 -->
+    <g transform="translate(0, 370)">
+      <rect x="0" y="0" width="180" height="40" rx="10" fill="rgba(26,38,57,0.7)" stroke="rgba(244,190,79,0.4)" stroke-width="1"/>
+      <text x="14" y="25" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="600">🧭 45 Destinations</text>
+
+      <rect x="195" y="0" width="180" height="40" rx="10" fill="rgba(26,38,57,0.7)" stroke="rgba(244,190,79,0.4)" stroke-width="1"/>
+      <text x="209" y="25" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="600">🧬 Smart Trip DNA</text>
+
+      <rect x="390" y="0" width="210" height="40" rx="10" fill="rgba(26,38,57,0.7)" stroke="rgba(244,190,79,0.4)" stroke-width="1"/>
+      <text x="404" y="25" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="600">✈️ Supersonic Avionics</text>
+    </g>
+
+    <!-- Chips Row 2 -->
+    <g transform="translate(0, 425)">
+      <rect x="0" y="0" width="225" height="40" rx="10" fill="rgba(26,38,57,0.7)" stroke="rgba(125,211,252,0.35)" stroke-width="1"/>
+      <text x="14" y="25" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="600">🎫 Digital Boarding Pass</text>
+
+      <rect x="240" y="0" width="195" height="40" rx="10" fill="rgba(26,38,57,0.7)" stroke="rgba(125,211,252,0.35)" stroke-width="1"/>
+      <text x="254" y="25" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="600">🎲 Satellite Roulette</text>
+
+      <rect x="450" y="0" width="165" height="40" rx="10" fill="rgba(26,38,57,0.7)" stroke="rgba(125,211,252,0.35)" stroke-width="1"/>
+      <text x="464" y="25" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="600">🗺️ Day Roadmaps</text>
+    </g>
+
+    <!-- Bottom URL Bar -->
+    <line x1="0" y1="500" x2="660" y2="500" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+    <text x="0" y="535" fill="#f4be4f" font-family="'JetBrains Mono', Courier, monospace" font-size="16" font-weight="700">HTTPS LIVE · https://vishal-rao28.github.io/miravoya/</text>
+  </g>
+</svg>

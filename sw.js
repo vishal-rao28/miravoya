@@ -4,12 +4,17 @@
    so travel itineraries, packing lists, and phrasebooks work offline.
    ========================================================================== */
 
-const CACHE_NAME = 'miravoya-v5.2.0';
+const CACHE_NAME = 'miravoya-v5.3.0';
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './robots.txt',
+  './sitemap.xml',
+  './opensearch.xml',
   './assets/favicon.svg',
+  './assets/miravoya-social-card.png',
+  './assets/miravoya-social-card.svg',
   './styles/tokens.css',
   './styles/main.css',
   './js/guard.js',

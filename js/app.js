@@ -637,17 +637,20 @@
     if (!grid) return;
 
     const q = state.search.trim().toLowerCase();
+    const isBrandSearch = q === 'miravoya' || q === 'mira' || q.includes('miravoya');
     const list = DESTINATIONS.filter((d) => {
       if (state.scope !== 'all' && d.scope !== state.scope) return false;
       if (state.category !== 'All' && !d.styles.includes(state.category)) return false;
-      if (!q) return true;
+      if (!q || isBrandSearch) return true;
       const text = `${d.name} ${d.country} ${d.region} ${d.highlight} ${d.description} ${d.styles.join(' ')} ${(d.topPlaces || []).map((p) => `${p.name} ${p.note}`).join(' ')}`.toLowerCase();
       return text.includes(q);
     });
 
     const countEl = document.getElementById('explore-count');
     if (countEl) {
-      countEl.textContent = `${list.length} ${list.length === 1 ? 'place' : 'places'} · ${list.reduce((n, d) => n + (d.topPlaces?.length || 0), 0)} tourist spots`;
+      countEl.textContent = isBrandSearch
+        ? `Miravoya Top ${list.length} destinations · ${list.reduce((n, d) => n + (d.topPlaces?.length || 0), 0)} tourist spots`
+        : `${list.length} ${list.length === 1 ? 'place' : 'places'} · ${list.reduce((n, d) => n + (d.topPlaces?.length || 0), 0)} tourist spots`;
     }
 
     if (!list.length) {
@@ -2569,6 +2572,57 @@
                   }))
                 );
               } else {
+                if (q.includes('mira') || q.includes('miravoya')) {
+                  const brandActions = [
+                    {
+                      icon: '🧭',
+                      title: 'Miravoya — Global Travel Studio Hub',
+                      sub: 'Official Luxury Route Architect & 45 Destinations Studio',
+                      badge: 'TOP ↵',
+                      run: () => { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                    },
+                    {
+                      icon: '🎲',
+                      title: 'Miravoya Satellite Meridian Roulette',
+                      sub: 'Random teleportation to 45 handpicked global destinations',
+                      badge: 'ROULETTE ↵',
+                      run: () => { window.Miravoya.openSurpriseRoulette?.(); }
+                    },
+                    {
+                      icon: '✈️',
+                      title: 'Miravoya Supersonic Flight Trajectory HUD',
+                      sub: 'Live geodesic flight radar with Mach 0.84 calculation & GPS lock',
+                      badge: 'AVIONICS ↵',
+                      run: () => { window.Miravoya.openFlightTrajectory?.(); }
+                    },
+                    {
+                      icon: '🧬',
+                      title: 'Miravoya Smart Trip DNA Matchmaker',
+                      sub: 'AI-style soulmate destination matching across budget, vibe & pace',
+                      badge: 'MATCH ↵',
+                      run: () => { document.getElementById('dna-section')?.scrollIntoView({ behavior: 'smooth' }); }
+                    },
+                    {
+                      icon: '🎫',
+                      title: 'Miravoya Official Booking Studio & Gold Stamp',
+                      sub: 'Multi-modal booking passes & collectible digital wax seal',
+                      badge: 'BOARDING ↵',
+                      run: () => {
+                        document.getElementById('book-section')?.scrollIntoView({ behavior: 'smooth' });
+                        setTimeout(() => document.getElementById('issue-pass-stamp-btn')?.click(), 400);
+                      }
+                    },
+                    {
+                      icon: '🗺️',
+                      title: 'Miravoya Day-by-Day Journey Roadmap',
+                      sub: 'Editable itinerary timeline, packing list, currency & phrasebook',
+                      badge: 'ROADMAP ↵',
+                      run: () => { document.getElementById('roadmap-section')?.scrollIntoView({ behavior: 'smooth' }); }
+                    }
+                  ];
+                  addGroup('✨ Miravoya Signature Suggestions', brandActions);
+                }
+
                 const destMatches = DESTINATIONS.filter((d) =>
                   `${d.name} ${d.country} ${d.region} ${d.code} ${d.styles.join(' ')}`.toLowerCase().includes(q)
                 )
@@ -2670,6 +2724,21 @@
                 closeSpotlight();
               }
             });
+
+            // Check URL ?search= parameter on page load (OpenSearch / deep linking)
+            try {
+              const urlParams = new URLSearchParams(window.location.search);
+              const qParam = urlParams.get('search');
+              if (qParam) {
+                const expInp = document.getElementById('explore-search');
+                if (expInp) {
+                  expInp.value = qParam;
+                  state.search = qParam;
+                  renderExplore();
+                  document.getElementById('explore-section')?.scrollIntoView({ behavior: 'smooth' });
+                }
+              }
+            } catch (_) {}
           }
 
   /* ------------------------------------------------------------------------

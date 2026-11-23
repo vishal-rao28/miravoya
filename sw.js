@@ -4,7 +4,7 @@
    so travel itineraries, packing lists, and phrasebooks work offline.
    ========================================================================== */
 
-const CACHE_NAME = 'miravoya-v1.0.3';
+const CACHE_NAME = 'miravoya-v5.2.0';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -26,16 +26,17 @@ const CORE_ASSETS = [
 
 // 1. Install Event — Pre-cache essential application shell
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(CORE_ASSETS).catch((err) => {
         console.warn('[Miravoya SW] Pre-cache item failed, continuing:', err);
       });
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// 2. Activate Event — Clean up stale previous cache versions
+// 2. Activate Event — Clean up stale previous cache versions immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {

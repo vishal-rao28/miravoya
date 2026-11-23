@@ -32,8 +32,27 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles/tokens.css?v=5" />
-  <link rel="stylesheet" href="styles/main.css?v=27" />
+  <link rel="stylesheet" href="styles/tokens.css?v=920" />
+  <link rel="stylesheet" href="styles/main.css?v=920" />
+  <script>
+    (function () {
+      try {
+        let theme = localStorage.getItem('miravoya_theme');
+        if (!theme) {
+          const raw = localStorage.getItem('terravoyage_state_v2');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            theme = parsed.theme;
+          }
+        }
+        if (theme === 'light' || theme === 'horizon') {
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (_) { }
+    })();
+  </script>
   <script src="js/guard.js"></script>
 </head>
 
@@ -179,17 +198,96 @@
       </a>
 
       <nav class="nav-links" aria-label="Main sections">
-        <a class="nav-link" href="#explore-section">Explore</a>
-        <a class="nav-link" href="#dna-section">Trip DNA</a>
-        <a class="nav-link" href="#season-matrix-section">Season Matrix</a>
-        <a class="nav-link" href="#book-section">Book</a>
-        <a class="nav-link" href="#compare-section">Compare</a>
-        <a class="nav-link" href="#roadmap-section">Roadmap</a>
-        <a class="nav-link" href="#toolkit-section">Companion</a>
-        <a class="nav-link" href="#power-tools-section">🚗 Road Trips &amp; Split</a>
-        <button type="button" class="nav-link nav-vault-trigger" id="nav-vault-link" style="background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font:inherit;">
-          <span>💼</span> Travel Vault
-        </button>
+        <a class="nav-link is-active" href="#explore-section">
+          <span class="nav-tab-icon" aria-hidden="true">🧭</span>
+          <span class="nav-tab-text">Explore</span>
+        </a>
+        <a class="nav-link" href="#dna-section">
+          <span class="nav-tab-icon" aria-hidden="true">🧬</span>
+          <span class="nav-tab-text">Trip DNA</span>
+        </a>
+        <a class="nav-link" href="#book-section">
+          <span class="nav-tab-icon" aria-hidden="true">🎫</span>
+          <span class="nav-tab-text">Book</span>
+        </a>
+        <a class="nav-link" href="#roadmap-section">
+          <span class="nav-tab-icon" aria-hidden="true">🗺️</span>
+          <span class="nav-tab-text">Roadmap</span>
+        </a>
+
+        <!-- "More ▾" Dropdown for Secondary Tools & Vault -->
+        <div class="nav-dropdown-wrap" id="nav-more-dropdown-wrap">
+          <button type="button" class="nav-link nav-dropdown-btn" id="nav-more-btn" aria-expanded="false" aria-haspopup="true" aria-label="More navigation tools">
+            <span class="nav-tab-icon" aria-hidden="true">✨</span>
+            <span class="nav-tab-text">More</span>
+            <svg class="dropdown-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 4.5 L6 8 L9.5 4.5" />
+            </svg>
+          </button>
+          
+          <div class="nav-dropdown-menu" id="nav-more-menu" role="menu" aria-label="More travel tools">
+            <a class="dropdown-menu-item" href="#season-matrix-section" role="menuitem">
+              <span class="dropdown-item-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+              </span>
+              <div class="dropdown-item-info">
+                <span class="dropdown-item-title">Season Matrix</span>
+                <span class="dropdown-item-desc">Peak weather &amp; 12-month heatmap</span>
+              </div>
+            </a>
+            <a class="dropdown-menu-item" href="#compare-section" role="menuitem">
+              <span class="dropdown-item-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 20V10M12 20V4M6 20v-6"/>
+                </svg>
+              </span>
+              <div class="dropdown-item-info">
+                <span class="dropdown-item-title">Compare Places</span>
+                <span class="dropdown-item-desc">Side-by-side city comparator</span>
+              </div>
+            </a>
+            <a class="dropdown-menu-item" href="#toolkit-section" role="menuitem">
+              <span class="dropdown-item-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                </svg>
+              </span>
+              <div class="dropdown-item-info">
+                <span class="dropdown-item-title">Companion Toolkit</span>
+                <span class="dropdown-item-desc">Packing checklist, FX converter &amp; phrases</span>
+              </div>
+            </a>
+            <a class="dropdown-menu-item" href="#power-tools-section" role="menuitem">
+              <span class="dropdown-item-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                </svg>
+              </span>
+              <div class="dropdown-item-info">
+                <span class="dropdown-item-title">Road Trips &amp; Split</span>
+                <span class="dropdown-item-desc">Scenic road trips &amp; split-bill expense log</span>
+              </div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <button type="button" class="dropdown-menu-item nav-vault-trigger" id="nav-vault-link" role="menuitem">
+              <span class="dropdown-item-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </span>
+              <div class="dropdown-item-info">
+                <span class="dropdown-item-title">Travel Vault</span>
+                <span class="dropdown-item-desc">Offline backups, sync code &amp; explorer profile</span>
+              </div>
+            </button>
+          </div>
+        </div>
       </nav>
 
       <div class="nav-actions">
@@ -199,34 +297,16 @@
           <span id="sync-status-text" class="sync-text">Live Synced</span>
         </div>
 
-        <!-- Ambient Nature Soundscape Bar -->
-        <div class="ambient-sound-group" id="ambient-sound-group" title="Ambient Travel Soundscape (Ocean Waves, Alpine Wind, Monsoon Rain)">
-          <span class="ambient-label">🎧</span>
-          <button type="button" class="sound-mode-btn" data-sound-mode="ocean" title="Ocean Waves (Calm Shore)">🌊</button>
-          <button type="button" class="sound-mode-btn" data-sound-mode="mountain" title="Alpine Wind (Mountain Peak)">🏔️</button>
-          <button type="button" class="sound-mode-btn" data-sound-mode="rain" title="Monsoon Rain (Cozy Shelter)">🌧️</button>
-          <button type="button" class="sound-mode-btn is-active" data-sound-mode="off" title="Mute Ambient Audio">🔇</button>
-        </div>
-
-        <!-- Open Travel Vault Button -->
-        <button type="button" id="open-vault-btn" class="btn btn-sm btn-vault" title="Open Miravoya Travel Vault (Profile, Backups &amp; Sync)">
-          <span>💼</span> Vault
+        <!-- Quick Action & Search Trigger Button (⌘K) -->
+        <button type="button" id="spotlight-open-btn" class="nav-spotlight-btn" aria-label="Open Spotlight Command Palette (⌘K)" title="Quick Actions & Search (⌘K)">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span class="spotlight-nav-label">Actions</span>
+          <kbd class="spotlight-nav-kbd">⌘K</kbd>
         </button>
 
-        <div class="atmosphere-switcher" role="group" aria-label="Switch living travel atmosphere theme">
-          <button type="button" class="atmo-dot is-active" data-set-theme="horizon" data-label="🌅 Horizon"
-            title="Golden Horizon (Warm Daylight)"></button>
-          <button type="button" class="atmo-dot" data-set-theme="aurora" data-label="🌌 Aurora"
-            title="Aurora Borealis (Nordic Night Glass)"></button>
-          <button type="button" class="atmo-dot" data-set-theme="sahara" data-label="🏜️ Sahara"
-            title="Sahara Dusk (Desert Gold Velvet)"></button>
-          <button type="button" class="atmo-dot" data-set-theme="monaco" data-label="👑 Monaco"
-            title="Monaco Grand Luxe (Imperial Emerald &amp; 24K Gold)"></button>
-          <button type="button" class="atmo-dot" data-set-theme="tokyo" data-label="⚡ Tokyo"
-            title="Tokyo Cyber Neon (Midnight Laser Glow)"></button>
-          <button type="button" class="atmo-dot" data-set-theme="kyoto" data-label="🌸 Kyoto"
-            title="Kyoto Twilight (Sakura Ink)"></button>
-        </div>
         <select id="currency-select" class="select-pill" aria-label="Display currency">
           <option value="INR">INR ₹</option>
           <option value="USD">USD $</option>
@@ -234,7 +314,74 @@
           <option value="GBP">GBP £</option>
           <option value="JPY">JPY ¥</option>
         </select>
-        <a href="#roadmap-section" class="btn btn-primary btn-sm">Plan Trip</a>
+
+        <!-- Glassy Light / Dark Mode Toggle Switch -->
+        <button type="button" id="theme-toggle-btn" class="glass-theme-toggle" aria-label="Toggle Light and Dark Mode" title="Toggle Light / Dark Mode">
+          <span class="glass-toggle-thumb">
+            <svg class="sun-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </span>
+          <span class="glass-toggle-label" id="theme-mode-text">Dark</span>
+        </button>
+
+        <script>
+          window.toggleMiravoyaTheme = function (triggerBtn) {
+            const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+            const isL = cur === 'light' || cur === 'horizon';
+            const next = isL ? 'monaco' : 'horizon';
+            document.documentElement.setAttribute('data-theme', next);
+            document.documentElement.dataset.theme = next;
+            try {
+              localStorage.setItem('miravoya_theme', next);
+              const raw = localStorage.getItem('terravoyage_state_v2');
+              const s = raw ? JSON.parse(raw) : {};
+              s.theme = next;
+              localStorage.setItem('terravoyage_state_v2', JSON.stringify(s));
+            } catch (_) { }
+            const btn = triggerBtn || document.getElementById('theme-toggle-btn');
+            const lbl = document.getElementById('theme-mode-text');
+            if (btn) {
+              btn.classList.toggle('is-light', !isL);
+              btn.setAttribute('aria-pressed', !isL ? 'true' : 'false');
+            }
+            if (lbl) {
+              lbl.textContent = !isL ? 'Light' : 'Dark';
+            }
+            if (window.Miravoya && typeof window.Miravoya.applyTheme === 'function') {
+              window.Miravoya.applyTheme(btn, next);
+            }
+          };
+
+          (function () {
+            const btn = document.getElementById('theme-toggle-btn');
+            const lbl = document.getElementById('theme-mode-text');
+            const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+            const isL = cur === 'light' || cur === 'horizon';
+            if (btn) {
+              btn.classList.toggle('is-light', isL);
+              btn.setAttribute('aria-pressed', isL ? 'true' : 'false');
+              btn.onclick = function (e) {
+                e.preventDefault();
+                window.toggleMiravoyaTheme(this);
+              };
+            }
+            if (lbl) {
+              lbl.textContent = isL ? 'Light' : 'Dark';
+            }
+          })();
+        </script>
       </div>
     </div>
     <div class="scroll-flight-track" aria-hidden="true">
@@ -245,74 +392,72 @@
 
   <main id="top">
     <!-- ====================================================================
-         HERO: Editorial Statement + Interactive Animated World Flight Map
+         HERO: Editorial Statement + Interactive Architectural Cartography Stage
          ==================================================================== -->
     <section class="hero-wrap" aria-label="Interactive World Route Explorer">
       <div class="hero-card">
-        <!-- Decorative Animated Flight Route Arcs -->
-        <svg class="hero-flight-arcs" viewBox="0 0 900 420" fill="none" aria-hidden="true">
-          <path class="flight-arc arc-1" d="M-40 340 Q 220 60 520 155 T 960 40" />
-          <path class="flight-arc arc-2" d="M-20 120 Q 260 280 560 90 T 940 280" />
-          <circle class="arc-beacon b1" cx="220" cy="148" r="4" />
-          <circle class="arc-beacon b2" cx="520" cy="155" r="4.5" />
-          <circle class="arc-beacon b3" cx="370" cy="195" r="3.5" />
-        </svg>
         <div class="hero-copy">
-          <span class="hero-kicker">✦ All-in-One Travel Architect</span>
+          <div class="hero-eyebrow">
+            <span class="hero-eyebrow-idx">01</span>
+            <span class="hero-eyebrow-sep">/</span>
+            <span class="hero-eyebrow-tag">CARTOGRAPHY &amp; ROUTE STUDIO</span>
+          </div>
           <h1 class="hero-title">
-            Explore the globe, compare cities, and chart your <em>perfect roadmap</em>.
+            Explore destinations, compare routes, and architect your <em>journey</em>.
           </h1>
           <p class="hero-sub">
-            Click any destination pin on the live flight map to preview routes, compare costs and safety side-by-side,
-            generate a boarding pass, and architect your day-by-day itinerary.
+            High-precision cartographic previews, live GPS telemetry, multi-city route comparisons, and offline-first itinerary planning with zero cloud dependencies.
           </p>
           <div class="hero-cta-row">
             <a href="#explore-section" class="btn btn-primary">
-              Explore Places ↓
+              Explore Destinations ↓
             </a>
-            <a href="#book-section" class="btn"
-              style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.3);color:#fff;">
-              Booking Studio
+            <a href="#roadmap-section" class="btn btn-secondary">
+              Plan Itinerary
             </a>
-            <a href="#roadmap-section" class="btn"
-              style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.22);color:#fff;">
-              🗺️ Plan Roadmap
-            </a>
-            <a href="#power-tools-section" class="btn"
-              style="background:rgba(244,190,79,0.18);border-color:rgba(244,190,79,0.45);color:#fef08a;">
-              🚗 Road Trip &amp; Split
-            </a>
+            <button type="button" id="hero-surprise-btn" class="btn btn-surprise" title="Roll random surprise destination with satellite lock">
+              <span class="btn-dice-icon" aria-hidden="true">🎲</span>
+              <span>Surprise Me</span>
+            </button>
+            <button type="button" id="hero-spotlight-btn" class="btn btn-spotlight-trigger" title="Open Quick Actions & Command Palette (⌘K)">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <span>Actions</span>
+              <kbd class="hero-kbd">⌘K</kbd>
+            </button>
           </div>
 
           <div class="hero-metrics">
-            <div>
-              <div class="metric-val">270+ Spots</div>
-              <div class="metric-label">TN · India · World</div>
+            <div class="hero-metric-cell">
+              <div class="metric-val">270+</div>
+              <div class="metric-label">Destinations (TN · India · World)</div>
             </div>
-            <div>
-              <div class="metric-val">Live GPS</div>
-              <div class="metric-label">Google Maps & Satellite</div>
+            <div class="hero-metric-cell">
+              <div class="metric-val">LIVE GPS</div>
+              <div class="metric-label">Continuous Location Lock</div>
             </div>
-            <div>
-              <div class="metric-val">Official Apps</div>
-              <div class="metric-label">Flights · Stays · Rail</div>
+            <div class="hero-metric-cell">
+              <div class="metric-val">100% PRIVATE</div>
+              <div class="metric-label">Zero-Cloud Offline Vault</div>
             </div>
           </div>
         </div>
 
-        <!-- Live Interactive Google Map Explorer -->
+        <!-- Live Interactive Google Map Explorer Console -->
         <div class="map-stage" id="google-map-stage">
           <div class="gmap-toolbar">
             <button type="button" id="gmap-live-btn" class="live-gps-btn"
               title="Track my live GPS location continuously on Google Maps">
               <span class="live-dot" aria-hidden="true"></span>
-              <span id="gmap-live-label">My Live GPS</span>
+              <span id="gmap-live-label">LIVE GPS</span>
             </button>
 
             <form id="gmap-search-form" class="gmap-search-form">
               <input type="search" id="gmap-search-input" class="gmap-search-input"
-                placeholder="Search any place on Google Maps..." aria-label="Search place on Google Maps" />
-              <button type="submit" class="btn btn-sm btn-primary" style="height:34px;padding:0 12px;">Go</button>
+                placeholder="Search place or coordinates..." aria-label="Search place on Google Maps" />
+              <button type="submit" class="btn btn-sm btn-primary" style="height:34px;padding:0 14px;">Find</button>
             </form>
 
             <div class="gmap-mode-group" role="group" aria-label="Google Map view layer">
@@ -320,20 +465,28 @@
               <button type="button" class="gmap-mode-btn" data-gmap-mode="k">Satellite</button>
               <button type="button" class="gmap-mode-btn" data-gmap-mode="h">Hybrid</button>
             </div>
+
+            <button type="button" id="gmap-trajectory-btn" class="gmap-action-pill" title="Simulate supersonic flight trajectory & distance">
+              <span class="pill-jet" aria-hidden="true">✈</span>
+              <span>Trajectory</span>
+            </button>
+            <button type="button" id="gmap-surprise-btn" class="gmap-action-pill" title="Spin satellite roulette to a random destination">
+              <span aria-hidden="true">🎲</span>
+              <span>Surprise</span>
+            </button>
           </div>
 
           <div id="gmap-quick-pills" class="gmap-quick-pills" aria-label="Quick destination jumps"></div>
 
           <div class="gmap-frame-wrap">
             <div id="gmap-loading" class="gmap-loading">
-              <span style="font-size:1.8rem;">🛰️</span>
-              <strong>Detecting your live location automatically...</strong>
-              <span style="opacity:0.75;font-size:0.7rem;">Allow browser location for street-level GPS precision</span>
+              <strong>Locating coordinates...</strong>
+              <span style="opacity:0.75;font-size:0.72rem;">Calibrating real-time GPS telemetry</span>
             </div>
-            <div id="gmap-radar-hud" class="gmap-radar-hud" aria-hidden="true">
+            <div id="gmap-radar-hud" class="gmap-radar-hud" aria-hidden="true" style="display:none;">
               <div class="radar-ring"></div>
               <div class="radar-ring ring-2"></div>
-              <div id="radar-alt-pill" class="radar-alt-pill">🛰️ ZOOMING IN · 12,400 m</div>
+              <div id="radar-alt-pill" class="radar-alt-pill">GPS LOCK</div>
             </div>
             <iframe id="google-map-iframe" class="gmap-iframe" title="Live Interactive Google Map" src="about:blank"
               referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
@@ -341,28 +494,23 @@
 
           <div class="map-hud">
             <div style="min-width:0;flex:1;">
-              <div id="map-hud-title" class="map-hud-title">🛰️ Detecting your live location...</div>
-              <div id="map-hud-meta" class="map-hud-meta">Connecting to high-accuracy GPS</div>
+              <div id="map-hud-title" class="map-hud-title">Detecting location...</div>
+              <div id="map-hud-meta" class="map-hud-meta">Connecting to GPS telemetry</div>
             </div>
-            <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;">
-              <button type="button" id="map-fix-pin-btn" class="btn btn-sm"
-                style="background:rgba(56,189,248,0.18);color:#bae6fd;border-color:rgba(56,189,248,0.48);"
-                title="Pin your exact street, building, or coordinates if desktop Wi-Fi GPS is off">🎯 Fix Exact
-                Pin</button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <button type="button" id="map-fix-pin-btn" class="btn btn-sm btn-secondary"
+                title="Pin your exact street, building, or coordinates if desktop Wi-Fi GPS is off">Calibrate Pin</button>
               <a id="map-hud-open-gmaps" href="https://www.google.com/maps/search/?api=1&query=Ooty,+Tamil+Nadu,+India"
-                target="_blank" rel="noopener noreferrer" class="btn btn-sm"
-                style="background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.28);">Google Maps
-                ↗</a>
+                target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary">Open in Maps ↗</a>
               <button type="button" id="map-hud-book" class="btn btn-sm btn-primary">Book</button>
-              <button type="button" id="map-hud-roadmap" class="btn btn-sm"
-                style="background:rgba(244,190,79,0.2);color:#fde68a;border-color:rgba(244,190,79,0.45);">Roadmap</button>
+              <button type="button" id="map-hud-roadmap" class="btn btn-sm btn-secondary">Roadmap</button>
             </div>
           </div>
 
           <!-- Inline Exact Location Calibrator Drawer (for desktop Wi-Fi drift / pinpoint lock) -->
           <div id="gmap-calibrate-drawer" class="gmap-calibrate-drawer" hidden>
             <div class="gmap-cal-head">
-              <strong>🎯 Set Your Exact Current Location</strong>
+              <strong>Set Exact Current Location</strong>
               <button type="button" id="gmap-cal-close" class="gmap-cal-close" aria-label="Close calibrator">✕</button>
             </div>
             <p class="gmap-cal-note">Desktop Wi-Fi GPS can drift by 1–3 km. Enter your exact street, college, area, or
@@ -375,8 +523,7 @@
               <button type="submit" class="btn btn-sm btn-primary"
                 style="height:34px;padding:0 12px;white-space:nowrap;">Pin Here</button>
               <button type="button" id="gmap-cal-rescan" class="btn btn-sm"
-                style="height:34px;background:rgba(52,211,153,0.18);color:#a7f3d0;border-color:rgba(52,211,153,0.45);white-space:nowrap;">📡
-                Re-Scan GPS</button>
+                style="height:34px;background:rgba(52,211,153,0.18);color:#a7f3d0;border-color:rgba(52,211,153,0.45);white-space:nowrap;">Re-Scan GPS</button>
             </form>
             <div id="gmap-cal-results" class="gmap-cal-results"></div>
           </div>
@@ -423,10 +570,9 @@
         <section id="dna-section" class="section-block reveal" aria-labelledby="dna-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">✦ Exclusive · Trip DNA Engine</div>
-              <h2 id="dna-title" class="section-title">Find Your Soulmate Destination</h2>
-              <p class="section-desc">Dial in your budget, trip length, vibe, and pace — our live compatibility engine
-                scores all 25 TN, India & World spots and loads your roadmap in 1 click.</p>
+              <div class="eyebrow">02 / Trip Compatibility</div>
+              <h2 id="dna-title" class="section-title">Destination Matchmaker</h2>
+              <p class="section-desc">Filter by budget, trip length, vibe, and travel pace to score compatibility across Tamil Nadu, India, and global destinations.</p>
             </div>
           </div>
 
@@ -434,24 +580,24 @@
             <div class="panel-card" style="display:flex;flex-direction:column;gap:14px;">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                 <div>
-                  <label class="field-label" for="dna-scope">Where to Look</label>
+                  <label class="field-label" for="dna-scope">Geographic Scope</label>
                   <select id="dna-scope" class="select">
                     <option value="all">Anywhere (TN · India · World)</option>
-                    <option value="tn">Tamil Nadu (TN) Only</option>
+                    <option value="tn">Tamil Nadu Only</option>
                     <option value="india">India Only</option>
                     <option value="world">Other Countries Only</option>
                   </select>
                 </div>
                 <div>
-                  <label class="field-label" for="dna-vibe">Dream Vibe</label>
+                  <label class="field-label" for="dna-vibe">Primary Vibe</label>
                   <select id="dna-vibe" class="select">
-                    <option value="Any">Surprise Me</option>
-                    <option value="Hills">🏔️ Hills & Mountains</option>
-                    <option value="Beaches">🏖️ Beaches & Islands</option>
-                    <option value="Heritage">🛕 Heritage & Temples</option>
-                    <option value="City">🌆 Cities & Culture</option>
-                    <option value="Adventure">🧭 Adventure & Nature</option>
-                    <option value="Food">🍽️ Food & Budget</option>
+                    <option value="Any">All Landscapes</option>
+                    <option value="Hills">Hills &amp; Mountains</option>
+                    <option value="Beaches">Beaches &amp; Coastline</option>
+                    <option value="Heritage">Heritage &amp; Architecture</option>
+                    <option value="City">Metropolitan &amp; Culture</option>
+                    <option value="Adventure">Adventure &amp; Nature</option>
+                    <option value="Food">Culinary &amp; Markets</option>
                   </select>
                 </div>
               </div>
@@ -477,14 +623,13 @@
               <div>
                 <label class="field-label" for="dna-pace">Travel Pace</label>
                 <select id="dna-pace" class="select">
-                  <option value="relaxed">Slow & Scenic (Nature / Chill)</option>
-                  <option value="culture">Culture & Culinary Immersion</option>
-                  <option value="adventure">Fast-Paced Adventure</option>
+                  <option value="relaxed">Slow &amp; Scenic (Nature / Relaxed)</option>
+                  <option value="culture">Culture &amp; Culinary Immersion</option>
+                  <option value="adventure">Fast-Paced Exploration</option>
                 </select>
               </div>
 
-              <button type="button" id="dna-run-btn" class="btn btn-primary" style="width:100%;">⚡ Synthesize My Trip
-                DNA</button>
+              <button type="button" id="dna-run-btn" class="btn btn-primary" style="width:100%;">Calculate Destination Matches</button>
             </div>
 
             <div id="dna-results" class="dna-results-grid"></div>
@@ -497,11 +642,9 @@
         <section id="season-matrix-section" class="section-block reveal" aria-labelledby="heatmap-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">✦ Exclusive · Smart Season Matrix</div>
-              <h2 id="heatmap-title" class="section-title">12-Month “When to Go” Peak Heatmap</h2>
-              <p id="heatmap-heading" class="section-desc">Tap any month of the year to instantly see where the weather
-                is
-                at peak perfection across TN, India, and the globe.</p>
+              <div class="eyebrow">03 / Weather Heatmap</div>
+              <h2 id="heatmap-title" class="section-title">12-Month Season Matrix</h2>
+              <p id="heatmap-heading" class="section-desc">Select any month to evaluate peak weather conditions across all destinations.</p>
             </div>
           </div>
 
@@ -517,19 +660,18 @@
         <section id="book-section" class="section-block reveal" aria-labelledby="book-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">02 · Verified Official Booking Redirects</div>
-              <h2 id="book-title" class="section-title">Flights, Stays & Rail / Car Booking Studio</h2>
-              <p class="section-desc">Enter your trip details to preview an animated Flight Pass, Hotel Keycard, or Rail
-                Ticket — then redirect straight to trusted official booking apps with zero fake prices.</p>
+              <div class="eyebrow">04 / Booking Studio</div>
+              <h2 id="book-title" class="section-title">Flights, Stays &amp; Rail Booking Studio</h2>
+              <p class="section-desc">Configure travel criteria to preview a digital Boarding Pass, Hotel Keycard, or Rail Ticket with direct official reservation links.</p>
             </div>
           </div>
 
           <div class="booking-shell">
             <div class="panel-card book-form-frame">
               <div class="tab-strip" role="tablist" aria-label="Booking category">
-                <button type="button" class="tab-btn is-active" data-book-tab="flights">✈️ Flights</button>
-                <button type="button" class="tab-btn" data-book-tab="stays">🏨 Stays</button>
-                <button type="button" class="tab-btn" data-book-tab="transit">🚆 Rail & Car</button>
+                <button type="button" class="tab-btn is-active" data-book-tab="flights">Flights</button>
+                <button type="button" class="tab-btn" data-book-tab="stays">Stays</button>
+                <button type="button" class="tab-btn" data-book-tab="transit">Rail &amp; Transit</button>
               </div>
 
               <div class="form-grid">
@@ -569,10 +711,10 @@
             <div class="panel-card ticket-studio-frame">
               <div class="ticket-studio-head">
                 <div>
-                  <div class="ticket-studio-kicker">✦ LIVE ANIMATED PASS STUDIO</div>
+                  <div class="ticket-studio-kicker">Digital Boarding Pass</div>
                   <div id="ticket-studio-title" class="ticket-studio-title">Flight Boarding Pass Preview</div>
                 </div>
-                <span class="ticket-studio-badge">✓ OFFICIAL LINK</span>
+                <span class="ticket-studio-badge">Official Link</span>
               </div>
 
               <!-- Dynamic 3-Mode Animated Ticket Stage (Flight Pass / Hotel Keycard / Rail Ticket) -->
@@ -587,7 +729,7 @@
         <section id="compare-section" class="section-block reveal" aria-labelledby="compare-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">03 · Smart Comparison</div>
+              <div class="eyebrow">05 / Destination Comparator</div>
               <h2 id="compare-title" class="section-title">Compare Destinations Side-by-Side</h2>
               <p class="section-desc">Evaluate daily cost, safety index, nomad Wi-Fi speed, flight time, weather, and
                 visa
@@ -605,25 +747,25 @@
         <section id="roadmap-section" class="section-block reveal" aria-labelledby="roadmap-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">04 · Itinerary & Route Architect</div>
-              <h2 id="roadmap-title" class="section-title">Interactive Trip Timeline & Roadmap</h2>
+              <div class="eyebrow">06 / Roadmap Planner</div>
+              <h2 id="roadmap-title" class="section-title">Day-by-Day Journey Roadmap</h2>
               <p id="roadmap-summary" class="section-desc">Customize your day-by-day route, reorder stops, track costs,
                 and export your itinerary.</p>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
               <select id="roadmap-dest-select" class="select" style="width:auto;min-width:210px;height:38px;"
                 aria-label="Choose destination roadmap"></select>
-              <button type="button" id="roadmap-reset-btn" class="btn btn-sm">Reset Template</button>
+              <button type="button" id="roadmap-reset-btn" class="btn btn-sm">Reset</button>
               <button type="button" id="roadmap-share-link-btn" class="btn btn-sm btn-teal" title="Copy shareable link to this roadmap">
-                <span>🔗</span> Share Link
+                Share Link
               </button>
-              <button type="button" id="roadmap-whatsapp-btn" class="btn btn-sm btn-whatsapp" style="background:#25D366;color:#ffffff;border:none;display:inline-flex;align-items:center;gap:4px;font-weight:600;" title="Share day-by-day itinerary on WhatsApp">
-                <span>📲</span> WhatsApp Itinerary
+              <button type="button" id="roadmap-whatsapp-btn" class="btn btn-sm" style="background:#15803d;color:#ffffff;border:none;display:inline-flex;align-items:center;gap:4px;font-weight:600;" title="Share day-by-day itinerary on WhatsApp">
+                WhatsApp
               </button>
               <button type="button" id="roadmap-pdf-btn" class="btn btn-sm" title="Print or Save PDF Itinerary">
-                <span>📄</span> Export PDF
+                PDF
               </button>
-              <button type="button" id="roadmap-export-btn" class="btn btn-sm">Export .md ↓</button>
+              <button type="button" id="roadmap-export-btn" class="btn btn-sm">Markdown ↓</button>
             </div>
           </div>
 
@@ -631,7 +773,7 @@
             <div id="timeline-spine" class="timeline-spine"></div>
 
             <aside class="panel-card">
-              <h3 style="margin:0 0 14px;font-family:var(--font-serif);font-size:1.25rem;">Add Roadmap Milestone</h3>
+              <h3 style="margin:0 0 14px;font-family:var(--font-sans);font-size:1.15rem;font-weight:600;">Add Roadmap Milestone</h3>
               <form id="add-stop-form" style="display:flex;flex-direction:column;gap:12px;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                   <div>
@@ -663,7 +805,7 @@
                 <div>
                   <label class="field-label" for="stop-title">Activity / Stop Name</label>
                   <input type="text" id="stop-title" class="input"
-                    placeholder="e.g., Sunset Rooftop Café & Night Market" required />
+                    placeholder="e.g., Sunset Rooftop Café &amp; Night Market" required />
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%;">+ Add to Timeline</button>
               </form>
@@ -677,11 +819,9 @@
         <section id="toolkit-section" class="section-block reveal" aria-labelledby="toolkit-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">05 · Essential Travel Companion</div>
-              <h2 id="toolkit-title" class="section-title">Budget, Packing, Currency & Phrasebook</h2>
-              <p class="section-desc">Everything else travelers need before takeoff—built directly into your browser
-                with
-                zero logins.</p>
+              <div class="eyebrow">07 / Travel Companion</div>
+              <h2 id="toolkit-title" class="section-title">Budget, Packing, Currency &amp; Phrasebook</h2>
+              <p class="section-desc">Client-side offline utilities: packing lists, FX rate calculator, and localized travel phrasebook.</p>
             </div>
           </div>
 
@@ -689,7 +829,7 @@
             <!-- Budget Calculator -->
             <article class="panel-card tool-budget">
               <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;">
-                <h3 style="margin:0;font-family:var(--font-serif);font-size:1.2rem;">💰 Trip Budget & Split</h3>
+                <h3 style="margin:0;font-family:var(--font-sans);font-size:1.15rem;font-weight:600;">Trip Budget &amp; Split</h3>
                 <span id="budget-per-person"
                   style="font-family:var(--font-mono);font-size:0.78rem;color:var(--sage);font-weight:700;">—</span>
               </div>
@@ -750,17 +890,17 @@
             <!-- Smart Packing Checklist -->
             <article class="panel-card tool-packing">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-                <h3 style="margin:0;font-family:var(--font-serif);font-size:1.2rem;">🎒 Smart Packing</h3>
+                <h3 style="margin:0;font-family:var(--font-sans);font-size:1.15rem;font-weight:600;">Packing Checklist</h3>
                 <span id="pack-progress"
                   style="font-family:var(--font-mono);font-size:0.72rem;color:var(--teal);font-weight:700;">0%</span>
               </div>
 
               <div style="margin-top:12px;">
                 <select id="pack-kit-select" class="select" aria-label="Select packing kit">
-                  <option value="city">🏙️ City & Culture Kit</option>
-                  <option value="beach">🏖️ Beach & Island Kit</option>
-                  <option value="mountain">🏔️ Mountain & Cold Kit</option>
-                  <option value="adventure">🧭 Adventure & Trek Kit</option>
+                  <option value="city">City &amp; Culture Kit</option>
+                  <option value="beach">Beach &amp; Island Kit</option>
+                  <option value="mountain">Mountain &amp; Cold Weather Kit</option>
+                  <option value="adventure">Adventure &amp; Trek Kit</option>
                 </select>
               </div>
 
@@ -779,7 +919,7 @@
 
             <!-- Live Currency Converter + Phrasebook -->
             <article class="panel-card tool-phrase">
-              <h3 style="margin:0 0 10px;font-family:var(--font-serif);font-size:1.2rem;">💱 FX & Phrases</h3>
+              <h3 style="margin:0 0 10px;font-family:var(--font-sans);font-size:1.15rem;font-weight:600;">Currency &amp; Phrases</h3>
 
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
                 <input type="number" id="fx-amount" class="input" style="height:36px;grid-column:1/-1;" value="100"
@@ -803,16 +943,11 @@
           <!-- Direct Trusted Travel Tools Strip -->
           <div class="partners-strip">
             <a class="partner-link" href="https://www.google.com/travel/flights" target="_blank"
-              rel="noopener noreferrer"><span>✈️ Google Flights</span><span>↗</span></a>
-            <a class="partner-link" href="https://www.rome2rio.com" target="_blank" rel="noopener noreferrer"><span>🚆
-                Rome2Rio Routes</span><span>↗</span></a>
-            <a class="partner-link" href="https://www.booking.com" target="_blank" rel="noopener noreferrer"><span>🏨
-                Booking.com</span><span>↗</span></a>
-            <a class="partner-link" href="https://www.skyscanner.com" target="_blank" rel="noopener noreferrer"><span>🔍
-                Skyscanner</span><span>↗</span></a>
-            <a class="partner-link" href="https://www.windy.com" target="_blank" rel="noopener noreferrer"><span>🌦️
-                Windy
-                Weather</span><span>↗</span></a>
+              rel="noopener noreferrer"><span>Google Flights</span><span>↗</span></a>
+            <a class="partner-link" href="https://www.rome2rio.com" target="_blank" rel="noopener noreferrer"><span>Rome2Rio Routes</span><span>↗</span></a>
+            <a class="partner-link" href="https://www.booking.com" target="_blank" rel="noopener noreferrer"><span>Booking.com</span><span>↗</span></a>
+            <a class="partner-link" href="https://www.skyscanner.com" target="_blank" rel="noopener noreferrer"><span>Skyscanner</span><span>↗</span></a>
+            <a class="partner-link" href="https://www.windy.com" target="_blank" rel="noopener noreferrer"><span>Windy Weather</span><span>↗</span></a>
           </div>
         </section>
 
@@ -822,10 +957,9 @@
         <section id="power-tools-section" class="section-block reveal" aria-labelledby="power-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">06 · Smart Road Trips & Group Finance</div>
-              <h2 id="power-title" class="section-title">Road-Trip Fuel Estimator & Group Bill Splitter</h2>
-              <p class="section-desc">Plan TN & India road trips with automatic distance, fuel & toll math, plus a live
-                Splitwise-style group settlement engine.</p>
+              <div class="eyebrow">08 / Road Trips &amp; Group Settlement</div>
+              <h2 id="power-title" class="section-title">Road-Trip Fuel Estimator &amp; Group Bill Splitter</h2>
+              <p class="section-desc">Plan Tamil Nadu and India road trips with automated distance, fuel, and toll calculations, plus a live group split settlement engine.</p>
             </div>
           </div>
 
@@ -833,8 +967,8 @@
             <!-- Road-Trip Estimator -->
             <article class="panel-card" id="road-trip-card">
               <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
-                <h3 style="margin:0;font-family:var(--font-serif);font-size:1.25rem;">🚗 Road-Trip Distance, Fuel &amp; Toll Estimator</h3>
-                <span style="background:rgba(20,83,45,0.12);color:#15803d;border:1px solid rgba(20,83,45,0.25);font-size:0.72rem;padding:3px 8px;border-radius:12px;font-weight:700;">🇮🇳 Tamil Nadu &amp; India Only</span>
+                <h3 style="margin:0;font-family:var(--font-sans);font-size:1.15rem;font-weight:600;">Road-Trip Distance, Fuel &amp; Toll Estimator</h3>
+                <span style="background:var(--teal-soft);color:var(--teal);border:1px solid var(--border-medium);font-size:0.72rem;padding:3px 8px;border-radius:4px;font-weight:600;">Tamil Nadu &amp; India Corridors</span>
               </div>
 
               <div class="form-grid">
@@ -851,7 +985,7 @@
                   <div id="road-fuel-rate-banner" class="road-fuel-rate-card">
                     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
                       <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-secondary);">
-                        📍 Real State Fuel Rates (<span id="road-fuel-state-name">Tamil Nadu</span>):
+                        Real State Fuel Rates (<span id="road-fuel-state-name">Tamil Nadu</span>):
                       </span>
                       <span id="road-fuel-active-tag" style="font-size:0.75rem;font-family:var(--font-mono);color:var(--terracotta);font-weight:700;">
                         Selected: Petrol ₹100.85/L
@@ -863,7 +997,7 @@
                         <span id="road-petrol-val" class="fp-val">₹100.85/L</span>
                       </button>
                       <button type="button" id="btn-fuel-diesel" class="fuel-price-btn" data-fuel-type="diesel">
-                        <span class="fp-type">🛢️ Diesel</span>
+                        <span class="fp-type">Diesel</span>
                         <span id="road-diesel-val" class="fp-val">₹92.44/L</span>
                       </button>
                       <button type="button" id="btn-fuel-ev" class="fuel-price-btn" data-fuel-type="ev">
@@ -871,7 +1005,7 @@
                         <span id="road-ev-val" class="fp-val">₹8.50/kWh</span>
                       </button>
                       <button type="button" id="btn-fuel-cng" class="fuel-price-btn" data-fuel-type="cng">
-                        <span class="fp-type">🟢 CNG</span>
+                        <span class="fp-type">CNG</span>
                         <span id="road-cng-val" class="fp-val">₹84.50/kg</span>
                       </button>
                     </div>
@@ -881,11 +1015,11 @@
                 <div>
                   <label class="field-label" for="road-vehicle">Vehicle Preset</label>
                   <select id="road-vehicle" class="select">
-                    <option value="car" selected>🚗 Hatchback / Sedan (Default 17 km/L · Petrol)</option>
-                    <option value="suv">🚙 SUV / 7-Seater (Default 12 km/L · Diesel)</option>
-                    <option value="bike">🏍️ Bike / Cruiser (Default 38 km/L · Petrol)</option>
+                    <option value="car" selected>Hatchback / Sedan (Default 17 km/L · Petrol)</option>
+                    <option value="suv">SUV / 7-Seater (Default 12 km/L · Diesel)</option>
+                    <option value="bike">Bike / Cruiser (Default 38 km/L · Petrol)</option>
                     <option value="ev">⚡ Electric Vehicle (EV · 8 km/kWh)</option>
-                    <option value="cng">🟢 CNG Car (Default 24 km/kg)</option>
+                    <option value="cng">CNG Car (Default 24 km/kg)</option>
                     <option value="custom">⚙️ Custom Mileage / Fuel</option>
                   </select>
                 </div>
@@ -919,8 +1053,8 @@
                     <span id="road-toll-rate-badge" style="font-size:0.75rem;font-weight:normal;opacity:0.8;">~₹1.60/km</span>
                   </label>
                   <select id="road-toll-mode" class="select">
-                    <option value="auto" selected>🛣️ Highway Tolls (Auto by Distance)</option>
-                    <option value="none">🚫 No Tolls (State Highway / Local Road)</option>
+                    <option value="auto" selected>Highway Tolls (Auto by Distance)</option>
+                    <option value="none">No Tolls (State Highway / Local Road)</option>
                     <option value="custom">✏️ Custom Toll Amount</option>
                   </select>
                 </div>
@@ -945,7 +1079,7 @@
               <!-- All Places Exact Fuel Price Table Collapsible -->
               <details id="all-places-fuel-accordion" class="fuel-table-accordion" style="margin-bottom:14px;">
                 <summary class="fuel-table-summary">
-                  <span>📋 Exact Petrol &amp; Diesel Price List for All Places</span>
+                  <span>Petrol &amp; Diesel Price List for All Places</span>
                   <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--terracotta);">Click to View All Places ▼</span>
                 </summary>
                 <div class="fuel-places-table-wrap">
@@ -966,14 +1100,14 @@
 
               <a id="road-gmaps-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-teal"
                 style="width:100%;">
-                🗺️ Open Turn-by-Turn Route in Google Maps ↗
+                Open Turn-by-Turn Route in Google Maps ↗
               </a>
             </article>
 
             <!-- Group Expense Splitter -->
             <article class="panel-card" id="bill-splitter-card">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;">
-                <h3 style="margin:0;font-family:var(--font-serif);font-size:1.25rem;">🧾 Group Trip Bill Splitter</h3>
+                <h3 style="margin:0;font-family:var(--font-serif);font-size:1.25rem;">Group Trip Bill Splitter</h3>
                 <div style="display:flex;align-items:center;gap:8px;">
                   <span id="split-total-badge"
                     style="font-family:var(--font-mono);font-size:0.82rem;color:var(--terracotta);font-weight:700;">Total: ₹0</span>
@@ -984,19 +1118,19 @@
               <!-- Smart Zero-Cost Sharing & Export Bar -->
               <div class="split-sharing-toolbar" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding:8px 10px;background:var(--surface-sunken, rgba(0,0,0,0.03));border-radius:var(--radius-sm, 6px);border:1px solid var(--border-subtle, rgba(0,0,0,0.08));align-items:center;">
                 <button type="button" id="btn-split-share-link" class="btn btn-sm btn-teal" style="font-size:0.74rem;padding:4px 10px;display:inline-flex;align-items:center;gap:4px;font-weight:600;" title="Generate shareable URL that loads this exact trip & expenses">
-                  <span>🔗</span> Copy Share Link
+                  Copy Share Link
                 </button>
                 <button type="button" id="btn-split-whatsapp" class="btn btn-sm btn-whatsapp" style="font-size:0.74rem;padding:4px 10px;background:#25D366;color:#ffffff;border:none;display:inline-flex;align-items:center;gap:4px;font-weight:700;" title="Send trip summary & settlements to WhatsApp group">
-                  <span>📲</span> WhatsApp Summary
+                  WhatsApp Summary
                 </button>
                 <button type="button" id="btn-split-export-pdf" class="btn btn-sm" style="font-size:0.74rem;padding:4px 10px;display:inline-flex;align-items:center;gap:4px;" title="Print official statement or Save as PDF">
-                  <span>📄</span> Export PDF
+                  Export PDF
                 </button>
                 <button type="button" id="btn-split-backup-json" class="btn btn-sm" style="font-size:0.74rem;padding:4px 8px;display:inline-flex;align-items:center;gap:4px;" title="Download trip JSON backup file">
-                  <span>💾</span> Backup JSON
+                  Backup JSON
                 </button>
                 <label for="split-import-file-input" class="btn btn-sm" style="font-size:0.74rem;padding:4px 8px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;margin:0;" title="Restore trip from JSON backup file">
-                  <span>📂</span> Import JSON
+                  Import JSON
                   <input type="file" id="split-import-file-input" accept=".json,application/json" style="display:none;" />
                 </label>
               </div>
@@ -1005,7 +1139,7 @@
               <div style="margin-bottom:10px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                   <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-secondary);">
-                    👥 Trip Friends:
+                    Trip Members:
                   </span>
                   <span id="split-member-count" style="font-size:0.72rem;font-family:var(--font-mono);color:var(--ink-muted);">0 Friends</span>
                 </div>
@@ -1028,10 +1162,10 @@
               <!-- Quick Expense Category Tag Pills -->
               <div class="split-quick-tags">
                 <span style="font-size:0.72rem;font-weight:600;color:var(--ink-muted);align-self:center;">Quick Fill:</span>
-                <button type="button" class="tag-quick-fill" data-title="🏨 Hotel / Resort Stay">🏨 Hotel</button>
-                <button type="button" class="tag-quick-fill" data-title="🍽️ Group Dinner &amp; Food">🍽️ Food</button>
-                <button type="button" class="tag-quick-fill" data-title="🎟️ Sightseeing Tickets">🎟️ Tickets</button>
-                <button type="button" class="tag-quick-fill" data-title="🚕 Cab / Auto Fare">🚕 Cab</button>
+                <button type="button" class="tag-quick-fill" data-title="Hotel / Resort Stay">Hotel</button>
+                <button type="button" class="tag-quick-fill" data-title="Group Dinner &amp; Food">Food</button>
+                <button type="button" class="tag-quick-fill" data-title="Sightseeing Tickets">Tickets</button>
+                <button type="button" class="tag-quick-fill" data-title="Cab / Auto Fare">Cab</button>
                 <button type="button" class="tag-quick-fill" data-title="☕ Tea &amp; Snacks">☕ Snacks</button>
               </div>
 
@@ -1079,17 +1213,15 @@
         <section id="journal-section" class="section-block reveal" aria-labelledby="journal-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">07 · Visual Travel Scrapbook</div>
-              <h2 id="journal-title" class="section-title">Polaroid Memory Journal</h2>
-              <p class="section-desc">Capture trip stories and attach photos from your device into tilted Polaroid
-                travel
-                cards saved right in your browser.</p>
+              <div class="eyebrow">09 / Travel Journal</div>
+              <h2 id="journal-title" class="section-title">Visual Memory Journal</h2>
+              <p class="section-desc">Record trip experiences and attach photos directly into local browser storage.</p>
             </div>
           </div>
 
           <div class="journal-shell">
             <form id="journal-form" class="panel-card" style="display:flex;flex-direction:column;gap:12px;">
-              <h3 style="margin:0;font-family:var(--font-serif);font-size:1.18rem;">📸 Pin a New Memory</h3>
+              <h3 style="margin:0;font-family:var(--font-sans);font-size:1.15rem;font-weight:600;">Record Travel Memory</h3>
               <div>
                 <label class="field-label" for="journal-place">Place / City</label>
                 <input type="text" id="journal-place" class="input" placeholder="e.g., Kodaikanal Pine Forest"
@@ -1098,10 +1230,10 @@
               <div>
                 <label class="field-label" for="journal-mood">Trip Vibe</label>
                 <select id="journal-mood" class="select">
-                  <option value="🌟 Unforgettable">🌟 Unforgettable</option>
-                  <option value="🔥 Epic Adventure">🔥 Epic Adventure</option>
-                  <option value="😌 Peaceful Escape">😌 Peaceful Escape</option>
-                  <option value="🍽️ Foodie Heaven">🍽️ Foodie Heaven</option>
+                  <option value="Unforgettable">Unforgettable</option>
+                  <option value="Adventure">Active Adventure</option>
+                  <option value="Peaceful">Peaceful Escape</option>
+                  <option value="Culinary">Culinary Experience</option>
                 </select>
               </div>
               <div>
@@ -1114,7 +1246,7 @@
                 <input type="file" id="journal-photo" accept="image/*" class="input"
                   style="padding-top:7px;height:auto;" />
               </div>
-              <button type="submit" class="btn btn-primary" style="width:100%;">Pin Polaroid Memory</button>
+              <button type="submit" class="btn btn-primary" style="width:100%;">Save Memory</button>
             </form>
 
             <div id="polaroid-grid" class="polaroid-grid"></div>
@@ -1127,15 +1259,14 @@
         <section id="readiness-section" class="section-block reveal" aria-labelledby="readiness-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">08 · Pre-Flight Command Center</div>
-              <h2 id="readiness-title" class="section-title">Trip Takeoff Countdown, World Clocks & Emergency SOS</h2>
+              <div class="eyebrow">10 / Pre-Flight Command</div>
+              <h2 id="readiness-title" class="section-title">Trip Countdown, World Clocks &amp; Emergency SOS</h2>
             </div>
           </div>
 
           <div class="power-grid">
             <article class="panel-card">
-              <h3 style="margin:0 0 12px;font-family:var(--font-serif);font-size:1.2rem;">⏳ Next Trip Takeoff Countdown
-              </h3>
+              <h3 style="margin:0 0 12px;font-family:var(--font-sans);font-size:1.15rem;font-weight:600;">Trip Countdown</h3>
               <div class="form-grid">
                 <div>
                   <label class="field-label" for="countdown-trip-label">Trip Name</label>
@@ -1150,12 +1281,11 @@
             </article>
 
             <article class="panel-card">
-              <h3 style="margin:0 0 10px;font-family:var(--font-serif);font-size:1.2rem;">🕒 Live Global Travel Clocks
-              </h3>
+              <h3 style="margin:0 0 10px;font-family:var(--font-sans);font-size:1.15rem;font-weight:600;">Live Global Clocks</h3>
               <div id="world-clocks-grid" class="clocks-strip"></div>
 
               <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-subtle);">
-                <strong style="font-size:0.84rem;">🆘 Quick Emergency Helplines</strong>
+                <strong style="font-size:0.84rem;">Emergency Helplines</strong>
                 <div class="sos-grid">
                   <div class="sos-card"><span>India National SOS</span><strong>112</strong></div>
                   <div class="sos-card"><span>India Tourist Help</span><strong>1363</strong></div>
@@ -1175,11 +1305,10 @@
         <section id="trips-section" class="section-block reveal" aria-labelledby="trips-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">09 · Saved Itinerary Vault</div>
-              <h2 id="trips-title" class="section-title">My Reserved Passes & Trips</h2>
+              <div class="eyebrow">11 / Saved Reservations</div>
+              <h2 id="trips-title" class="section-title">Reserved Passes &amp; Trips</h2>
             </div>
-            <span id="trips-count" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--ink-muted);">0
-              saved</span>
+            <span id="trips-count" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--ink-muted);">0 saved</span>
           </div>
 
           <div id="saved-trips-grid" class="trips-grid"></div>
@@ -1204,7 +1333,7 @@
       <div class="vault-hero">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;position:relative;z-index:2;">
           <div>
-            <div class="vault-hero-badge">💼 Zero-Cloud Travel Vault &amp; Sync</div>
+            <div class="vault-hero-badge">Zero-Cloud Travel Vault &amp; Sync</div>
             <h2 id="vault-title" style="margin:6px 0 4px;font-family:var(--font-serif);font-size:clamp(1.5rem,2.8vw,2rem);line-height:1.15;color:#ffffff;">
               Miravoya Master Travel Vault
             </h2>
@@ -1225,11 +1354,11 @@
             <div>
               <span style="font-size:0.75rem;font-family:var(--font-mono);color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em;">Traveler Status</span>
               <div id="vault-rank-title" style="font-family:var(--font-serif);font-size:1.3rem;font-weight:700;color:var(--ink-primary);">
-                🌱 Curious Nomad
+                Curious Nomad
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
-              <span id="vault-rank-badge" class="vault-rank-badge">🥉 Level 1</span>
+              <span id="vault-rank-badge" class="vault-rank-badge">Level 1</span>
               <span id="vault-xp-val" style="font-family:var(--font-mono);font-size:0.85rem;font-weight:700;color:var(--terracotta);">0 XP</span>
             </div>
           </div>
@@ -1246,19 +1375,19 @@
           </div>
           <div class="vault-stat-tile">
             <span class="vault-stat-val" id="vault-stat-roadmaps">0</span>
-            <span class="vault-stat-lbl">🗺️ Saved Roadmaps</span>
+            <span class="vault-stat-lbl">Saved Roadmaps</span>
           </div>
           <div class="vault-stat-tile">
             <span class="vault-stat-val" id="vault-stat-gear">0</span>
-            <span class="vault-stat-lbl">🎒 Gear Items</span>
+            <span class="vault-stat-lbl">Gear Items</span>
           </div>
           <div class="vault-stat-tile">
             <span class="vault-stat-val" id="vault-stat-expenses">0</span>
-            <span class="vault-stat-lbl">🧾 Group Bills</span>
+            <span class="vault-stat-lbl">Group Bills</span>
           </div>
           <div class="vault-stat-tile">
             <span class="vault-stat-val" id="vault-stat-memories">0</span>
-            <span class="vault-stat-lbl">📸 Polaroids</span>
+            <span class="vault-stat-lbl">Polaroids</span>
           </div>
         </div>
 
@@ -1267,7 +1396,7 @@
           <!-- Left Panel: Export & Quick Code -->
           <div class="vault-panel-box">
             <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:1.25rem;">💾</span>
+              
               <div>
                 <strong style="font-size:0.95rem;color:var(--ink-primary);display:block;">Backup &amp; Export</strong>
                 <span style="font-size:0.75rem;color:var(--ink-muted);">Save your complete travel universe</span>
@@ -1279,15 +1408,15 @@
             </p>
 
             <button type="button" id="vault-export-btn" class="btn btn-primary" style="width:100%;height:38px;">
-              📥 Download Travel Vault (.json)
+              Download Travel Vault (.json)
             </button>
 
             <div style="border-top:1px dashed var(--border-subtle);padding-top:10px;margin-top:2px;">
               <span style="font-size:0.74rem;font-weight:700;color:var(--ink-secondary);display:block;margin-bottom:6px;">
-                📋 Fast Cross-Device Sync Code:
+                Fast Cross-Device Sync Code:
               </span>
               <button type="button" id="vault-copy-token-btn" class="btn btn-sm btn-teal" style="width:100%;height:34px;font-size:0.76rem;">
-                🔗 Copy Vault Sync Code to Clipboard
+                Copy Vault Sync Code to Clipboard
               </button>
             </div>
           </div>
@@ -1295,7 +1424,7 @@
           <!-- Right Panel: Restore & File Drop -->
           <div class="vault-panel-box">
             <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:1.25rem;">📥</span>
+              
               <div>
                 <strong style="font-size:0.95rem;color:var(--ink-primary);display:block;">Restore &amp; Import</strong>
                 <span style="font-size:0.75rem;color:var(--ink-muted);">Load backup or transfer from phone</span>
@@ -1303,7 +1432,7 @@
             </div>
 
             <label id="vault-drop-zone" for="vault-file-input" class="vault-drop-zone">
-              <span style="font-size:1.6rem;display:block;margin-bottom:4px;">📂</span>
+              
               <strong style="font-size:0.82rem;color:var(--teal);display:block;">Click to browse or drop .json file</strong>
               <span style="font-size:0.72rem;color:var(--ink-muted);">Auto-validates &amp; restores seamlessly</span>
               <input type="file" id="vault-file-input" accept=".json,application/json" style="display:none;" />
@@ -1334,7 +1463,7 @@
           <button type="button" id="vault-reset-btn" class="mini-btn"
             style="color:#dc2626;border-color:rgba(220,38,38,0.3);background:rgba(220,38,38,0.06);padding:6px 12px;border-radius:var(--radius-pill);font-size:0.74rem;"
             title="Wipe local browser data and start fresh">
-            🗑️ Reset Data
+            Reset Data
           </button>
         </div>
       </div>
@@ -1366,33 +1495,33 @@
         <div id="guide-metrics" class="guide-metrics"></div>
 
         <div>
-          <h3 style="margin:0 0 10px;font-family:var(--font-serif);font-size:1.15rem;">📍 Top Must-Visit Places &
+          <h3 style="margin:0 0 10px;font-family:var(--font-serif);font-size:1.15rem;">Top Must-Visit Places &
             Landmarks</h3>
           <div id="guide-places" class="guide-places-grid"></div>
         </div>
 
         <div>
-          <h3 style="margin:0 0 10px;font-family:var(--font-serif);font-size:1.15rem;">🍽️ Famous Local Food &
+          <h3 style="margin:0 0 10px;font-family:var(--font-serif);font-size:1.15rem;">Famous Local Food &
             Must-Tries</h3>
           <div id="guide-food" class="chip-row"></div>
         </div>
 
         <div class="guide-info-row">
           <div class="guide-callout">
-            <strong style="display:block;margin-bottom:4px;">🚆 How to Reach & Transport</strong>
+            <strong style="display:block;margin-bottom:4px;">How to Reach & Transport</strong>
             <span id="guide-reach"></span>
           </div>
           <div class="guide-callout is-tip">
-            <strong style="display:block;margin-bottom:4px;">💡 Local Pro Tip & Entry Info</strong>
+            <strong style="display:block;margin-bottom:4px;">Local Pro Tip & Entry Info</strong>
             <span id="guide-tip"></span>
           </div>
         </div>
 
         <div
           style="display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;padding-top:10px;border-top:1px solid var(--border-subtle);">
-          <button type="button" id="guide-map-btn" class="btn btn-sm">📍 Show on Google Map</button>
+          <button type="button" id="guide-map-btn" class="btn btn-sm">Show on Google Map</button>
           <button type="button" id="guide-compare-btn" class="btn btn-sm">⚖ Add to Compare</button>
-          <button type="button" id="guide-roadmap-btn" class="btn btn-sm btn-teal">🗺️ Open Day-by-Day Roadmap</button>
+          <button type="button" id="guide-roadmap-btn" class="btn btn-sm btn-teal">Open Day-by-Day Roadmap</button>
           <button type="button" id="guide-book-btn" class="btn btn-sm btn-primary">✈️ Book This Trip</button>
         </div>
       </div>
@@ -1420,7 +1549,7 @@
     aria-label="Travel Spotlight Command Palette">
     <div class="spotlight-dialog">
       <div class="spotlight-input-bar">
-        <span style="font-size:1.1rem;opacity:0.8;">🔍</span>
+        
         <input type="text" id="spotlight-input" class="spotlight-input"
           placeholder="Search 45 destinations, 270 tourist spots, themes, or actions..." autocomplete="off" />
         <kbd class="spotlight-esc">ESC</kbd>
@@ -1435,8 +1564,106 @@
   </div>
 
   <!-- ======================================================================
-       LIVE WEATHER & TRIP PLANNING FORECAST STUDIO MODAL
+       INTERACTIVE SURPRISE JOURNEY SATELLITE ROULETTE MODAL
        ====================================================================== -->
+  <div id="surprise-roulette-modal" class="roulette-modal-backdrop" role="dialog" aria-modal="true" aria-label="Surprise Destination Roulette" hidden>
+    <div class="roulette-modal-dialog">
+      <div class="roulette-modal-header">
+        <div class="roulette-header-badge">
+          <span class="roulette-pulse-dot"></span>
+          <span>SATELLITE MERIDIAN CALIBRATOR</span>
+        </div>
+        <button type="button" class="roulette-close-btn" id="roulette-close-btn" aria-label="Close roulette">✕</button>
+      </div>
+
+      <div class="roulette-stage">
+        <div class="roulette-radar-rings" aria-hidden="true">
+          <div class="r-ring r-ring-1"></div>
+          <div class="r-ring r-ring-2"></div>
+          <div class="r-ring r-ring-3"></div>
+        </div>
+        
+        <div class="roulette-destination-slot">
+          <div id="roulette-emoji" class="roulette-emoji">🌍</div>
+          <h2 id="roulette-dest-name" class="roulette-dest-name">CALIBRATING MERIDIAN...</h2>
+          <div id="roulette-coords" class="roulette-coords">LAT: 00.0000° · LON: 00.0000°</div>
+          <div id="roulette-meta" class="roulette-meta">Scanning 45 global destinations...</div>
+        </div>
+      </div>
+
+      <div class="roulette-actions-row">
+        <button type="button" id="roulette-spin-again-btn" class="btn btn-secondary">
+          🎲 Spin Again
+        </button>
+        <button type="button" id="roulette-teleport-btn" class="btn btn-primary" style="display:none;">
+          🗺️ Teleport on Map
+        </button>
+        <button type="button" id="roulette-guide-btn" class="btn btn-secondary" style="display:none;">
+          📖 Open 48h Guide
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       AVIONICS SUPERSONIC FLIGHT TRAJECTORY RADAR HUD MODAL
+       ====================================================================== -->
+  <div id="flight-trajectory-modal" class="flight-trajectory-backdrop" role="dialog" aria-modal="true" aria-label="Supersonic Flight Trajectory Simulator" hidden>
+    <div class="flight-trajectory-dialog">
+      <div class="flight-hud-header">
+        <div class="flight-hud-callsign">
+          <span class="hud-blip"></span>
+          <span>AVIONICS FLIGHT DISPATCH · FLIGHT MV-789</span>
+        </div>
+        <button type="button" class="flight-hud-close" id="flight-hud-close-btn" aria-label="Close flight trajectory">✕</button>
+      </div>
+
+      <div class="flight-hud-route-banner">
+        <div class="flight-route-node">
+          <span class="flight-node-iata" id="flight-orig-iata">GPS</span>
+          <span class="flight-node-city" id="flight-orig-city">Current Location</span>
+        </div>
+        <div class="flight-vector-arc">
+          <div class="flight-vector-line">
+            <span class="flight-vector-plane">✈</span>
+          </div>
+          <span class="flight-vector-badge" id="flight-vector-dist">-- KM</span>
+        </div>
+        <div class="flight-route-node text-right">
+          <span class="flight-node-iata" id="flight-dest-iata">DEST</span>
+          <span class="flight-node-city" id="flight-dest-city">Destination</span>
+        </div>
+      </div>
+
+      <div class="flight-telemetry-grid">
+        <div class="telemetry-cell">
+          <span class="t-label">EST. FLIGHT TIME</span>
+          <span class="t-val" id="flight-tel-duration">--</span>
+        </div>
+        <div class="telemetry-cell">
+          <span class="t-label">CRUISING ALTITUDE</span>
+          <span class="t-val">38,000 FT</span>
+        </div>
+        <div class="telemetry-cell">
+          <span class="t-label">AIRSPEED</span>
+          <span class="t-val">MACH 0.84 (910 km/h)</span>
+        </div>
+        <div class="telemetry-cell">
+          <span class="t-label">STATUS</span>
+          <span class="t-val text-emerald">CLEARED FOR TAKEOFF</span>
+        </div>
+      </div>
+
+      <div class="flight-hud-actions">
+        <button type="button" id="flight-hud-book-btn" class="btn btn-primary">
+          ✈️ Search Flights on Skyscanner
+        </button>
+        <button type="button" id="flight-hud-pass-btn" class="btn btn-secondary">
+          🎫 Generate Boarding Pass
+        </button>
+      </div>
+    </div>
+  </div>
   <div id="weather-modal" class="weather-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="weather-modal-title" hidden>
     <div class="weather-modal-dialog">
       <!-- Modal Header -->
@@ -1447,7 +1674,7 @@
             <span id="wm-coords" class="coord-badge">11.41° N, 76.69° E</span>
             <span id="wm-local-clock" class="wm-time-tag">Local Time</span>
           </div>
-          <h2 id="weather-modal-title" class="wm-dest-title">🚂 Ooty &amp; Coonoor, Tamil Nadu</h2>
+          <h2 id="weather-modal-title" class="wm-dest-title">Ooty &amp; Coonoor, Tamil Nadu</h2>
         </div>
 
         <div class="weather-header-actions">
@@ -1462,10 +1689,10 @@
       <!-- Navigation Tabs inside Weather Modal: Today's Live Weather vs Plan Trip Days -->
       <div class="wm-nav-tabs" role="tablist">
         <button type="button" class="wm-tab is-active" data-wm-tab="today" role="tab" aria-selected="true">
-          🌤️ Today's Full Weather Report
+          Today's Weather Report
         </button>
         <button type="button" class="wm-tab" data-wm-tab="planner" role="tab" aria-selected="false">
-          🗓️ Plan Trip Days &amp; Forecast
+          Plan Trip Days &amp; Forecast
         </button>
       </div>
 
@@ -1516,9 +1743,9 @@
                     </defs>
                   </svg>
                   <div class="wm-solar-times">
-                    <span>🌅 Sunrise <strong id="wm-sunrise-time">--:--</strong></span>
+                    <span>Sunrise <strong id="wm-sunrise-time">--:--</strong></span>
                     <span id="wm-daylight-status">Daylight</span>
-                    <span>🌇 Sunset <strong id="wm-sunset-time">--:--</strong></span>
+                    <span>Sunset <strong id="wm-sunset-time">--:--</strong></span>
                   </div>
                 </div>
               </div>
@@ -1526,7 +1753,7 @@
 
             <!-- Smart Right-Now Travel Advice -->
             <div id="wm-travel-tip" class="wm-travel-tip">
-              <strong>🎒 Right-Now Travel Tip:</strong> Checking live telemetry, wind &amp; rain risk...
+              <strong>Travel Recommendation:</strong> Checking live telemetry, wind &amp; rain risk...
             </div>
           </div>
 
@@ -1594,7 +1821,7 @@
           <!-- 5-Day Quick Lookahead -->
           <div class="wm-section-box">
             <div class="wm-box-head">
-              <h4 class="wm-box-title">🗓️ 5-Day Weather Trend</h4>
+              <h4 class="wm-box-title">5-Day Weather Trend</h4>
               <button type="button" class="btn btn-sm btn-teal" id="wm-jump-planner-btn">Plan Specific Trip Days →</button>
             </div>
             <div id="wm-quick-forecast-strip" class="wm-quick-forecast-strip"></div>
@@ -1607,11 +1834,11 @@
           <div class="wm-planner-toolbar panel-card">
             <div class="wm-dates-form">
               <div class="wm-date-col">
-                <label class="field-label" for="wm-plan-start">🛫 Trip Start Day</label>
+                <label class="field-label" for="wm-plan-start">Trip Start Day</label>
                 <input type="date" id="wm-plan-start" class="input input-sm wm-date-input" />
               </div>
               <div class="wm-date-col">
-                <label class="field-label" for="wm-plan-end">🛬 Trip End Day</label>
+                <label class="field-label" for="wm-plan-end">Trip End Day</label>
                 <input type="date" id="wm-plan-end" class="input input-sm wm-date-input" />
               </div>
               <div class="wm-presets-col">
@@ -1628,11 +1855,11 @@
             <!-- Dynamic Trip Weather Badge & Intel Bar -->
             <div class="wm-trip-summary-bar">
               <div class="wm-ts-left">
-                <span class="wm-ts-badge" id="wm-trip-days-badge">🗓️ 5-Day Trip Weather Journey</span>
+                <span class="wm-ts-badge" id="wm-trip-days-badge">5-Day Weather Journey</span>
                 <span class="wm-ts-dates" id="wm-trip-dates-label">Loading planned dates...</span>
               </div>
               <div class="wm-ts-right" id="wm-trip-score-badge">
-                <span class="wm-score-pill">🌤️ Travel Weather Score: <strong>-- / 100</strong></span>
+                <span class="wm-score-pill">Travel Weather Score: <strong>-- / 100</strong></span>
               </div>
             </div>
           </div>
@@ -1659,7 +1886,7 @@
             </div>
             <div class="wm-intel-card">
               <div class="wm-intel-head">
-                <span class="wm-intel-icon">🗺️</span>
+                <span class="wm-intel-icon"></span>
                 <strong>Sightseeing Activity Comfort</strong>
               </div>
               <p id="wm-intel-activity" class="wm-intel-text">
@@ -1671,7 +1898,7 @@
           <!-- Start Trip Day to End Trip Day Detailed Cards Grid -->
           <div class="wm-section-box">
             <div class="wm-box-head">
-              <h4 class="wm-box-title" id="wm-journey-title">🌤️ Start-to-End Trip Day Weather Journey</h4>
+              <h4 class="wm-box-title" id="wm-journey-title">Trip Weather Forecast Journey</h4>
               <span class="wm-box-sub" id="wm-journey-sub">Complete daily forecast from departure to return</span>
             </div>
 
@@ -1683,13 +1910,13 @@
           <!-- Action Bar: Apply to Roadmap, Book Trip, Print Weather Brief -->
           <div class="wm-planner-actions">
             <button type="button" id="wm-apply-roadmap-btn" class="btn btn-teal">
-              🗺️ Load Into Day-by-Day Roadmap
+              Load Into Roadmap
             </button>
             <button type="button" id="wm-book-trip-btn" class="btn btn-primary">
               ✈️ Book Flights &amp; Stays For These Dates
             </button>
             <button type="button" id="wm-share-weather-btn" class="btn">
-              📋 Copy Trip Weather Brief
+              Copy Weather Brief
             </button>
           </div>
         </div>
@@ -1706,8 +1933,8 @@
       <!-- Top Theater Controls & Metadata -->
       <div class="cinema-header">
         <div class="cinema-brand">
-          <span class="cinema-lens-badge">🎬 2.39:1 CINEMATIC 4K SCENE REEL</span>
-          <span class="cinema-sound-indicator" id="cinema-sound-tag">🔊 Soundscape Active</span>
+          <span class="cinema-lens-badge">2.39:1 CINEMATIC SCENE REEL</span>
+          <span class="cinema-sound-indicator" id="cinema-sound-tag">Soundscape Active</span>
         </div>
         <div class="cinema-header-actions">
           <button type="button" class="cinema-ctrl-btn" id="cinema-sound-toggle" title="Toggle Nature Soundscape (Ocean / Mountain / Temple Chimes)">🔊 Sound: On</button>
@@ -1728,13 +1955,13 @@
           <!-- Scene Information Overlay Vignette -->
           <div class="cinema-overlay">
             <div class="cinema-location-meta">
-              <span class="cinema-tag-badge" id="cinema-scene-tag">🌅 4K Panoramic Horizon</span>
+              <span class="cinema-tag-badge" id="cinema-scene-tag">Panoramic Horizon</span>
               <h2 class="cinema-title" id="cinema-title">Madurai Meenakshi Temple</h2>
               <p class="cinema-scene-desc" id="cinema-scene-desc">Aerial twilight over the 14 soaring Dravidian gopurams</p>
             </div>
             <div class="cinema-telemetry">
-              <span class="cinema-tele-badge" id="cinema-tele-gps">📍 9.92° N, 78.12° E</span>
-              <span class="cinema-tele-badge" id="cinema-tele-light">🌅 Golden-Hour Horizon</span>
+              <span class="cinema-tele-badge" id="cinema-tele-gps">9.92° N, 78.12° E</span>
+              <span class="cinema-tele-badge" id="cinema-tele-light">Golden-Hour Horizon</span>
               <span class="cinema-tele-badge" id="cinema-tele-aspect">2.39:1 UHD Anamorphic</span>
             </div>
           </div>
@@ -1770,6 +1997,33 @@
     <span class="fab-jet" aria-hidden="true">✈</span>
   </button>
 
+  <!-- Floating Luxury Quick-Action Command Dock -->
+  <aside id="miravoya-quick-dock" class="quick-action-dock" aria-label="Quick Actions Dock">
+    <div class="quick-dock-inner">
+      <button type="button" class="dock-btn" id="dock-surprise-btn" title="Surprise Me (Roll random destination)">
+        <span class="dock-icon" aria-hidden="true">🎲</span>
+        <span class="dock-tooltip">Surprise Trip</span>
+      </button>
+      <button type="button" class="dock-btn" id="dock-trajectory-btn" title="Flight Trajectory Simulator">
+        <span class="dock-icon" aria-hidden="true">✈️</span>
+        <span class="dock-tooltip">Flight Arc</span>
+      </button>
+      <button type="button" class="dock-btn" id="dock-spotlight-btn" title="Spotlight Command Palette (⌘K)">
+        <span class="dock-icon" aria-hidden="true">🔍</span>
+        <span class="dock-tooltip">Search (⌘K)</span>
+      </button>
+      <button type="button" class="dock-btn" id="dock-theme-btn" title="Toggle Light / Dark Mode">
+        <span class="dock-icon" aria-hidden="true">🌓</span>
+        <span class="dock-tooltip">Switch Theme</span>
+      </button>
+      <div class="dock-divider"></div>
+      <button type="button" class="dock-btn" id="dock-top-btn" title="Scroll to Top">
+        <span class="dock-icon" aria-hidden="true">↑</span>
+        <span class="dock-tooltip">Top</span>
+      </button>
+    </div>
+  </aside>
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script defer src="js/destinations.js"></script>
@@ -1780,12 +2034,15 @@
   <script defer src="js/extras.js?v=6"></script>
   <script defer src="js/weather.js"></script>
   <script defer src="js/vault.js?v=1"></script>
-  <script defer src="js/app.js?v=21"></script>
+  <script defer src="js/app.js?v=920"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('Miravoya Service Worker active:', reg.scope))
+        navigator.serviceWorker.register('./sw.js?v=920')
+          .then((reg) => {
+            reg.update();
+            console.log('Miravoya Service Worker active:', reg.scope);
+          })
           .catch((err) => console.warn('Miravoya Service Worker registration failed:', err));
       });
     }

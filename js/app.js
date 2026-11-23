@@ -8,7 +8,7 @@
   const { DESTINATIONS, SCOPES, PLACE_CATEGORIES, CURRENCIES, initPlanner, initInnovations, initPowerExtras } = window.Miravoya;
 
   const STATE_KEY = 'terravoyage_state_v2';
-  const VALID_THEMES = ['horizon', 'aurora', 'sahara', 'monaco', 'santorini', 'tokyo', 'kyoto'];
+  const VALID_THEMES = ['horizon', 'aurora', 'sahara', 'monaco', 'santorini', 'tokyo', 'kyoto', 'light', 'dark'];
   const MAP_QUICK_IDS = ['ooty-coonoor', 'madurai', 'rameswaram', 'goa', 'kerala-munnar', 'kyoto', 'santorini', 'dubai'];
 
   let state = loadState();
@@ -392,65 +392,116 @@
       navigator.geolocation.clearWatch(liveGpsWatchId);
       liveGpsWatchId = null;
     }
-    liveGpsFollowing = true;
-    state.mapCustomQuery = '';
     livePos = {
-      lat: Number(lat),
-      lng: Number(lng),
-      label: labelText || `${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}`,
-      accuracy: 5,
-      speedKmh: 0,
+      lat,
+      lng,
+      label: labelText || 'Custom Pinned Pin',
+      accuracy: 10,
       source: 'pinned',
-      exactArea: Boolean(labelText),
-      updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      exactArea: true,
+      timestamp: Date.now()
     };
+    liveGpsFollowing = true;
     saveCachedLivePos(livePos);
-    lastRenderedLivePos = null;
+    updateLiveButtonUI();
+    hidePinCalibrator();
     renderWorldMap(false, true);
-    if (!labelText) reverseGeocodeLabel(livePos.lat, livePos.lng, 'pinned');
+    notify(`Pinned: ${labelText || `${lat.toFixed(4)}, ${lng.toFixed(4)}`}`);
+  }
+
+  function hidePinCalibrator() {
     const drawer = document.getElementById('gmap-calibrate-drawer');
     if (drawer) drawer.hidden = true;
-    notify(`🎯 Exact location locked: ${livePos.label}`);
   }
 
-  function initAutomaticLiveMap() {
-    // 1. If user already pinned their exact spot (or cached high-precision GPS), show it immediately!
-    if (livePos) {
-      liveGpsFollowing = true;
-      renderWorldMap(false);
-      if (livePos.source === 'pinned') return;
+  function renderMapHud(dest, showingLive) {
+    const titleEl = document.getElementById('map-hud-title');
+    const metaEl = document.getElementById('map-hud-meta');
+    const gmapsBtn = document.getElementById('map-hud-open-gmaps');
+    const bookBtn = document.getElementById('map-hud-book');
+    const roadmapBtn = document.getElementById('map-hud-roadmap');
+    const fixPinBtn = document.getElementById('map-fix-pin-btn');
+
+    if (showingLive && livePos) {
+      const nearest = findNearestDestination(livePos.lat, livePos.lng);
+      const accText = livePos.source === 'pinned'
+        ? 'Exact Calibrated Pin'
+        : livePos.accuracy
+          ? `GPS (±${Math.round(livePos.accuracy)}m)`
+          : 'Network IP Location';
+      const nearestText = nearest ? ` · Nearest: ${nearest.dest.name} (${nearest.km} km)` : '';
+      const updatedTime = livePos.timestamp ? new Date(livePos.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString();
+
+      if (titleEl) {
+        titleEl.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;margin-right:6px;box-shadow:0 0 10px #10b981;"></span>${esc(livePos.label || 'Current Location')}`;
+      }
+      if (metaEl) {
+        metaEl.innerHTML = `<span>${accText} · Updated ${updatedTime}${nearestText}</span>`;
+      }
+      if (gmapsBtn) {
+        gmapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(livePos.lat + ',' + livePos.lng)}`;
+        gmapsBtn.textContent = 'Open My Pin ↗';
+      }
+      if (bookBtn) {
+        bookBtn.onclick = () => {
+          if (nearest) jumpToBooking(nearest.dest.id);
+          else jumpToBooking(dest.id);
+        };
+      }
+      if (roadmapBtn) {
+        roadmapBtn.onclick = () => {
+          if (nearest) plannerApi?.selectRoadmapDestination(nearest.dest.id);
+          else plannerApi?.selectRoadmapDestination(dest.id);
+          document.getElementById('roadmap-section')?.scrollIntoView({ behavior: 'smooth' });
+        };
+      }
     } else {
-      renderMapPills();
+      if (titleEl) {
+        titleEl.textContent = state.mapCustomQuery ? state.mapCustomQuery : `${dest.icon} ${dest.name}, ${dest.country}`;
+      }
+      if (metaEl) {
+        metaEl.textContent = `${dest.region} · ${dest.styles.join(' · ')} · Best ${dest.bestSeason} · ${formatMoney(dest.dailyUsd)}/day`;
+      }
+      if (gmapsBtn) {
+        const q = state.mapCustomQuery || `${dest.name}, ${dest.country}`;
+        gmapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+        gmapsBtn.textContent = 'Google Maps ↗';
+      }
+      if (bookBtn) {
+        bookBtn.onclick = () => jumpToBooking(dest.id);
+      }
+      if (roadmapBtn) {
+        roadmapBtn.onclick = () => {
+          plannerApi?.selectRoadmapDestination(dest.id);
+          document.getElementById('roadmap-section')?.scrollIntoView({ behavior: 'smooth' });
+        };
+      }
     }
 
-    // 2. Prioritize Fresh High-Accuracy GPS first; only fall back to IP network if GPS takes > 2.5s
-    startLiveGpsTracking(true, false);
-
-    setTimeout(() => {
-      if (!livePos) detectNetworkLocationAuto();
-    }, 2400);
-
-    // 3. Safety fallback if offline & no GPS after 5s
-    setTimeout(() => {
-      if (!mapHasLoadedOnce) {
-        liveGpsFollowing = false;
-        renderWorldMap(false);
-      }
-    }, 5000);
+    if (fixPinBtn) {
+      fixPinBtn.onclick = () => {
+        const calDrawer = document.getElementById('gmap-calibrate-drawer');
+        if (calDrawer) {
+          calDrawer.hidden = !calDrawer.hidden;
+          if (!calDrawer.hidden) {
+            document.getElementById('gmap-cal-input')?.focus();
+          }
+        }
+      };
+    }
   }
 
-  function renderMapPills() {
+  function renderMapQuickPills() {
     const pillsWrap = document.getElementById('gmap-quick-pills');
     if (!pillsWrap) return;
-    const showingLive = liveGpsFollowing && Boolean(livePos);
-    const quickList = MAP_QUICK_IDS.map((id) => DESTINATIONS.find((d) => d.id === id)).filter(Boolean);
-    pillsWrap.innerHTML = quickList
-      .map((d) => {
-        const active = !showingLive && !state.mapCustomQuery && d.id === state.activeMapId;
-        const shortName = d.name.split('&')[0].split('(')[0].trim();
-        return `<button type="button" class="gmap-pill ${active ? 'is-active' : ''}" data-gmap-dest="${d.id}">${d.icon} ${esc(shortName)}</button>`;
-      })
-      .join('');
+
+    pillsWrap.innerHTML = MAP_QUICK_IDS.map((id) => {
+      const d = DESTINATIONS.find((x) => x.id === id);
+      if (!d) return '';
+      const active = !liveGpsFollowing && state.activeMapId === d.id && !state.mapCustomQuery;
+      const shortName = d.name.split(' ')[0];
+      return `<button type="button" class="gmap-pill ${active ? 'is-active' : ''}" data-gmap-dest="${d.id}">${d.icon} ${esc(shortName)}</button>`;
+    }).join('');
 
     pillsWrap.querySelectorAll('[data-gmap-dest]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -459,7 +510,7 @@
         state.mapCustomQuery = '';
         const inp = document.getElementById('gmap-search-input');
         if (inp) inp.value = '';
-        renderWorldMap(false);
+        renderWorldMap();
       });
     });
   }
@@ -471,39 +522,28 @@
     const iframe = document.getElementById('google-map-iframe');
     const radar = document.getElementById('gmap-radar-hud');
     const altPill = document.getElementById('radar-alt-pill');
+    const targetEl = document.getElementById('radar-target-name');
     if (!iframe || !radar || !altPill) return;
 
     clearTimeout(radarAnimTimer);
     clearInterval(radarAltInterval);
 
-    // Restart CSS keyframe cleanly
-    iframe.classList.remove('is-dive-zooming');
-    radar.classList.remove('is-active');
-    void iframe.offsetWidth;
-    iframe.classList.add('is-dive-zooming');
+    if (targetEl) targetEl.textContent = targetLabel || 'Target Destination';
     radar.classList.add('is-active');
+    iframe.classList.add('is-dive-zooming');
 
-    let alt = 12400;
-    const steps = 16;
-    let tick = 0;
-    altPill.textContent = `🛰️ ZOOMING IN · ${alt.toLocaleString()} m`;
-
+    let alt = 36000;
+    altPill.textContent = `ALT ${alt.toLocaleString()} FT`;
     radarAltInterval = setInterval(() => {
-      tick += 1;
-      const progress = tick / steps;
-      alt = Math.max(120, Math.round(12400 * Math.pow(1 - progress, 2.4)));
-      if (tick >= steps) {
-        clearInterval(radarAltInterval);
-        const shortLbl = String(targetLabel || 'LIVE LOCATION').slice(0, 26).toUpperCase();
-        altPill.textContent = `🎯 LOCKED · ${shortLbl}`;
-      } else {
-        altPill.textContent = `🛰️ ZOOMING IN · ${alt.toLocaleString()} m`;
-      }
-    }, 75);
+      alt = Math.max(1200, alt - 2800);
+      altPill.textContent = `ALT ${alt.toLocaleString()} FT`;
+      if (alt <= 1200) clearInterval(radarAltInterval);
+    }, 100);
 
     radarAnimTimer = setTimeout(() => {
       radar.classList.remove('is-active');
       iframe.classList.remove('is-dive-zooming');
+      clearInterval(radarAltInterval);
     }, 1750);
   }
 
@@ -516,28 +556,13 @@
     const latStr = showingLive ? livePos.lat.toFixed(6) : '';
     const lngStr = showingLive ? livePos.lng.toFixed(6) : '';
     const queryText = showingLive
-      ? `${latStr},${lngStr}`
-      : state.mapCustomQuery || `${dest.name}, ${dest.country}`;
+      ? (livePos.label || `${latStr},${lngStr}`)
+      : (state.mapCustomQuery || `${dest.name}, ${dest.country}`);
 
-    // Smart adaptive zoom based on exact precision so roads & exact pin are always centered cleanly
-    let zoom = 12;
-    if (showingLive) {
-      if (livePos.source === 'pinned') {
-        zoom = 17; // Exact user-calibrated street/building pin
-      } else if (livePos.source === 'gps' && livePos.accuracy > 0 && livePos.accuracy <= 100) {
-        zoom = 17; // Pinpoint street-level GPS
-      } else if (livePos.source === 'gps' && livePos.accuracy > 0 && livePos.accuracy <= 600) {
-        zoom = 15; // Neighborhood-level GPS
-      } else {
-        zoom = 13; // Wide desktop Wi-Fi / network area (shows full roads & landmarks)
-      }
-    } else if (state.mapCustomQuery) {
-      zoom = 14;
-    }
+    const zoom = showingLive ? (livePos.source === 'pinned' ? 17 : livePos.accuracy <= 100 ? 16 : 14) : 13;
 
-    // Pass BOTH q=lat,lng AND ll=lat,lng so Google Maps drops the pin and centers on the EXACT coordinate
     const llParam = showingLive ? `&ll=${encodeURIComponent(`${latStr},${lngStr}`)}` : '';
-    const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(queryText)}${llParam}&t=${encodeURIComponent(state.mapMode)}&z=${zoom}&hl=en&ie=UTF8&iwloc=&output=embed`;
+    const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(queryText)}${llParam}&t=${encodeURIComponent(state.mapMode || '')}&z=${zoom}&hl=en&ie=UTF8&iwloc=&output=embed`;
 
     const isFirstOpen = !mapHasLoadedOnce;
     if (!skipIframeReload && iframe.src !== embedUrl) {
@@ -555,79 +580,15 @@
       hideMapLoading();
     }
 
-    document.querySelectorAll('[data-gmap-mode]').forEach((btn) => {
-      btn.classList.toggle('is-active', btn.dataset.gmapMode === state.mapMode);
-    });
     updateLiveButtonUI();
-    renderMapPills();
-
-    // Update Map HUD
-    const openLink = document.getElementById('map-hud-open-gmaps');
-    if (showingLive) {
-      const nearest = findNearestDestination(livePos.lat, livePos.lng);
-      const speedText = livePos.speedKmh > 0 ? ` · ${livePos.speedKmh} km/h` : '';
-      const nearText = nearest ? ` · Nearest: ${nearest.dest.name} (${nearest.km} km)` : '';
-      let modeTag = 'Auto Area Estimate · Tap "🎯 Fix Exact Pin" if off';
-      if (livePos.source === 'pinned') {
-        modeTag = `🎯 Exact Calibrated Pin (${livePos.lat.toFixed(5)}, ${livePos.lng.toFixed(5)})`;
-      } else if (livePos.source === 'gps') {
-        modeTag =
-          livePos.accuracy > 300
-            ? `📡 Wi-Fi Estimate (±${livePos.accuracy}m) · Tap "🎯 Fix Exact Pin" if off`
-            : `🎯 Pinpoint GPS · ±${livePos.accuracy}m`;
-      }
-      const titleLabel = livePos.label ? `🟢 ${livePos.label}` : `🟢 Your Live Location (${livePos.lat.toFixed(4)}, ${livePos.lng.toFixed(4)})`;
-
-      document.getElementById('map-hud-title').textContent = titleLabel;
-      document.getElementById('map-hud-meta').textContent = `${modeTag}${speedText} · Updated ${livePos.updatedAt}${nearText}`;
-      if (openLink) {
-        openLink.href = `https://www.google.com/maps/search/?api=1&query=${livePos.lat},${livePos.lng}`;
-        openLink.textContent = 'Open My Pin ↗';
-      }
-      const nearDest = nearest ? nearest.dest : dest;
-      document.getElementById('map-hud-book').onclick = () => jumpToBooking(nearDest.id);
-      document.getElementById('map-hud-roadmap').onclick = () => plannerApi?.selectRoadmapDestination(nearDest.id);
-    } else if (state.mapCustomQuery) {
-      document.getElementById('map-hud-title').textContent = `📍 ${state.mapCustomQuery}`;
-      document.getElementById('map-hud-meta').textContent = 'Live Google Maps View · Tap "My Live Location" to return';
-      if (openLink) {
-        openLink.href = livePos
-          ? `https://www.google.com/maps/dir/?api=1&origin=${livePos.lat},${livePos.lng}&destination=${encodeURIComponent(state.mapCustomQuery)}`
-          : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(state.mapCustomQuery)}`;
-        openLink.textContent = livePos ? 'Directions ↗' : 'Google Maps ↗';
-      }
-      document.getElementById('map-hud-book').onclick = () => jumpToBooking(dest.id);
-      document.getElementById('map-hud-roadmap').onclick = () => plannerApi?.selectRoadmapDestination(dest.id);
-    } else {
-      document.getElementById('map-hud-title').textContent = `${dest.icon} ${dest.name}, ${dest.country}`;
-      document.getElementById('map-hud-meta').textContent = `${dest.coords} · ${dest.weather} · ${formatMoney(dest.dailyUsd)}/day`;
-      if (openLink) {
-        openLink.href = livePos
-          ? `https://www.google.com/maps/dir/?api=1&origin=${livePos.lat},${livePos.lng}&destination=${encodeURIComponent(queryText)}`
-          : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryText)}`;
-        openLink.textContent = livePos ? 'Directions ↗' : 'Google Maps ↗';
-      }
-      document.getElementById('map-hud-book').onclick = () => jumpToBooking(dest.id);
-      document.getElementById('map-hud-roadmap').onclick = () => plannerApi?.selectRoadmapDestination(dest.id);
-    }
+    renderMapHud(dest, showingLive);
+    renderMapQuickPills();
   }
 
-  function showDestinationOnGoogleMap(destId) {
-    liveGpsFollowing = false;
-    state.activeMapId = destId;
-    state.mapCustomQuery = '';
-    renderWorldMap(false);
-    document.getElementById('google-map-stage')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    const d = DESTINATIONS.find((x) => x.id === destId);
-    if (d) notify(`Showing ${d.name} on Google Maps`);
-  }
-
-  /* ------------------------------------------------------------------------
-     2. Explore: TN / India / Other Countries + Categories + Full Details
-     ------------------------------------------------------------------------ */
   function renderScopesAndCategories() {
     const scopeWrap = document.getElementById('scope-grid');
     const catWrap = document.getElementById('category-chips');
+    if (!scopeWrap || !catWrap) return;
 
     scopeWrap.innerHTML = SCOPES.map((s) => {
       const count = s.id === 'all' ? DESTINATIONS.length : DESTINATIONS.filter((d) => d.scope === s.id).length;
@@ -684,10 +645,10 @@
       return text.includes(q);
     });
 
-    const scopeLabels = { tn: 'TAMIL NADU', india: 'INDIA', world: 'INTERNATIONAL' };
-
-    // UNIFIED EXPLORE: ONE HEADLINE & CONTENT PER DESTINATION (WITH TOURIST SPOTS)
-    document.getElementById('explore-count').textContent = `${list.length} ${list.length === 1 ? 'place' : 'places'} · ${list.reduce((n, d) => n + (d.topPlaces?.length || 0), 0)} tourist spots`;
+    const countEl = document.getElementById('explore-count');
+    if (countEl) {
+      countEl.textContent = `${list.length} ${list.length === 1 ? 'place' : 'places'} · ${list.reduce((n, d) => n + (d.topPlaces?.length || 0), 0)} tourist spots`;
+    }
 
     if (!list.length) {
       grid.innerHTML = `<div class="panel-card" style="grid-column:1/-1;text-align:center;">No places matched this filter. Try switching to <strong>All Categories</strong> or another region!</div>`;
@@ -698,81 +659,64 @@
 
     grid.innerHTML = list
       .map((d) => {
-        const compared = state.compareIds.includes(d.id);
-        const spots = d.topPlaces || [];
-        const spotCount = spots.length;
+        const isCompared = Array.isArray(state.compareIds) && state.compareIds.includes(d.id);
+        const spots = (d.topPlaces || []).slice(0, 4);
 
         return `
-          <article class="dest-card is-cinematic spot-cinematic-card">
-            <div class="dest-visual is-cinematic" style="background:${d.gradient}; cursor:pointer;" data-cinema-dest="${d.id}" title="Click to view 4K Cinema Reel for ${esc(d.name)}">
-              <img class="dest-photo-bg" data-photo-id="${d.id}" loading="lazy" alt="${esc(d.name)}, ${esc(d.country)}" />
-              <span class="dest-emblem" aria-hidden="true">${d.icon}</span>
-              <div class="dest-top">
-                <span class="cinema-card-badge">🎬 2.39:1 CINEMATIC</span>
-                <div class="dest-top-right">
-                  <button type="button" class="dest-weather-badge" data-weather-dest="${d.id}" title="Click to view full live weather report & plan trip days" aria-label="View live weather & plan trip days for ${esc(d.name)}">
-                    <span class="dw-icon" data-weather-icon="${d.id}">⛅</span>
-                    <span class="dw-temp" data-weather-temp="${d.id}">--°</span>
-                  </button>
-                  <span class="dest-rating">★ ${d.rating.toFixed(1)}</span>
-                </div>
+        <article class="dest-card" data-dest-id="${d.id}">
+          <div class="dest-visual" style="background:${d.gradient};">
+            <img class="dest-photo-bg" data-photo-id="${d.id}" alt="${esc(d.name)}" loading="lazy" />
+            <div class="dest-top">
+              <span class="coord-badge">${esc(d.coords)}</span>
+              <span class="dest-rating">★ 4.9</span>
+            </div>
+            <span class="dest-emblem" aria-hidden="true">${d.icon}</span>
+            <div class="dest-heading">
+              <div class="dest-country">${esc(d.country)}</div>
+              <h3 class="dest-name">${esc(d.name)}</h3>
+            </div>
+          </div>
+          <div class="dest-body">
+            <p class="dest-desc">${esc(d.description || d.highlight)}</p>
+            ${spots.length ? `
+              <div class="dest-spots-chips" aria-label="Top Tourist Spots">
+                ${spots.map(s => `<button type="button" class="spot-pill" data-spot-name="${esc(s.name)}" data-dest-id="${d.id}" title="View ${esc(s.name)} on Google Maps">📍 ${esc(s.name)}</button>`).join('')}
               </div>
-              <div class="dest-heading">
-                <div class="dest-country">${esc(d.country)} · ${esc(scopeLabels[d.scope] || d.region)}</div>
-                <h3 class="dest-name" style="font-size:1.48rem;letter-spacing:0.01em;">${d.icon} ${esc(d.name)}</h3>
+            ` : ''}
+            <div class="dest-stats-row">
+              <div>
+                <span class="dest-stat-label">Daily Budget</span>
+                <span class="dest-stat-val">${formatMoney(d.dailyUsd)}</span>
+              </div>
+              <div>
+                <span class="dest-stat-label">Best Season</span>
+                <span class="dest-stat-val">${esc(d.bestSeason)}</span>
+              </div>
+              <div>
+                <span class="dest-stat-label">Style</span>
+                <span class="dest-stat-val">${esc(d.styles[0] || 'Explore')}</span>
               </div>
             </div>
-
-            <div class="dest-body">
-              <p class="dest-desc">${esc(d.description)}</p>
-
-              <!-- Top Tourist Spots List Under Headline & Description -->
-              <div class="dest-spots-section" style="margin:8px 0 10px;">
-                <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);margin-bottom:6px;">
-                  📍 Top Tourist Spots (${spotCount}):
-                </div>
-                <div class="dest-spots-chips">
-                  ${spots.slice(0, 4).map((p) => `<span class="spot-pill" title="${esc(p.note)}">📍 ${esc(p.name)}</span>`).join('')}
-                  ${spotCount > 4 ? `<span class="spot-pill" style="color:var(--teal);font-weight:700;">+${spotCount - 4} more</span>` : ''}
-                </div>
-              </div>
-
-              <div class="dest-card-tags">
-                ${d.styles.map((s) => `<span class="mini-tag">${esc(s)}</span>`).join('')}
-                <span class="mini-tag" style="color:#fef08a;background:rgba(244,190,79,0.18);border-color:rgba(244,190,79,0.4);font-weight:700;">🎬 ${spotCount + 1} 4K Scenes</span>
-              </div>
-
-              <div class="dest-stats-row">
-                <div>
-                  <span class="dest-stat-label">Daily Est.</span>
-                  <span class="dest-stat-val">${formatMoney(d.dailyUsd)}</span>
-                </div>
-                <div>
-                  <span class="dest-stat-label">Travel Est.</span>
-                  <span class="dest-stat-val">${formatMoney(d.flightUsd)}</span>
-                </div>
-                <div>
-                  <span class="dest-stat-label">Safety</span>
-                  <span class="dest-stat-val">${d.safety}/100</span>
-                </div>
-              </div>
-
-              <div style="display:grid;grid-template-columns:1.2fr 1fr 0.85fr auto;gap:6px;padding-top:10px;margin-top:auto;border-top:1px solid var(--border-subtle);">
-                <button type="button" class="btn btn-sm btn-primary" data-cinema-dest="${d.id}" style="font-weight:700;" title="Watch Cinematic 4K Reel">▶ Cinema</button>
-                <button type="button" class="btn btn-sm btn-teal" data-guide-dest="${d.id}">Full Guide</button>
-                <button type="button" class="btn btn-sm btn-outline" data-book-dest="${d.id}">Book</button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-compare ${compared ? 'is-selected' : ''}"
-                  data-compare-dest="${d.id}"
-                  title="Compare side-by-side (up to 3)"
-                >${compared ? '⚖ ✓' : '⚖'}</button>
-              </div>
+            <div class="dest-actions">
+              <button type="button" class="btn btn-sm btn-secondary" data-guide-dest="${d.id}">Guide & Spots</button>
+              <button type="button" class="btn btn-sm btn-primary" data-book-dest="${d.id}">Book</button>
+              <button type="button" class="btn btn-sm btn-secondary btn-compare ${isCompared ? 'is-selected' : ''}" data-compare-dest="${d.id}" title="${isCompared ? 'Remove from compare' : 'Compare'}">
+                ${isCompared ? '✓ Compared' : '+ Compare'}
+              </button>
             </div>
-          </article>
+          </div>
+        </article>
         `;
       })
       .join('');
+
+    grid.querySelectorAll('.spot-pill').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const d = DESTINATIONS.find((x) => x.id === btn.dataset.destId);
+        if (d) showSpotOnGoogleMap(btn.dataset.spotName, d);
+      });
+    });
 
     grid.querySelectorAll('[data-cinema-dest]').forEach((b) => {
       b.addEventListener('click', () => openCinemaTheater(b.dataset.cinemaDest, 0));
@@ -787,23 +731,19 @@
       b.addEventListener('click', () => toggleCompare(b.dataset.compareDest));
     });
 
-    window.Miravoya.photos?.hydratePhotos(grid);
-    window.Miravoya.weather?.hydrateCardBadges(grid);
+    if (window.TerraVoyage.photos?.hydratePhotos) {
+      window.TerraVoyage.photos.hydratePhotos(grid);
+    }
   }
 
-  /* ------------------------------------------------------------------------
-     2A. Fullscreen 4K IMAX Cinematic Theater & Soundscape Studio
-     ------------------------------------------------------------------------ */
+  function initAutomaticLiveMap() {
+    startLiveGpsTracking(true, false);
+  }
+
   let cinemaAudioCtx = null;
   let cinemaAudioSource = null;
-  let cinemaAudioGain = null;
   let cinemaAudioTimer = null;
-  let cinemaProgressInterval = null;
-  let cinemaIsPaused = false;
   let cinemaSoundEnabled = true;
-  let cinemaCurrentDestId = null;
-  let cinemaCurrentIndex = 0;
-  let cinemaReel = [];
 
   function stopCinemaSound() {
     if (cinemaAudioSource) {
@@ -1427,6 +1367,14 @@
             <div class="barcode-bars" aria-hidden="true"></div>
           </div>
         </aside>
+        <div class="pass-actions-bar" style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap;">
+          <button type="button" id="issue-pass-stamp-btn" class="btn btn-sm btn-stamp">
+            ★ Stamp &amp; Validate Pass
+          </button>
+          <button type="button" id="copy-pass-link-btn" class="btn btn-sm btn-secondary">
+            🔗 Share Pass
+          </button>
+        </div>
       `;
     } else if (state.bookingTab === 'stays') {
       const stayTierKey = document.getElementById('book-cabin')?.value || 'economy';
@@ -1479,6 +1427,14 @@
             Redirects directly to verified listings on Agoda, Booking.com, OYO & MakeMyTrip.
           </div>
         </aside>
+        <div class="pass-actions-bar" style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap;">
+          <button type="button" id="issue-pass-stamp-btn" class="btn btn-sm btn-stamp">
+            ★ Validate Digital Card
+          </button>
+          <button type="button" id="copy-pass-link-btn" class="btn btn-sm btn-secondary">
+            🔗 Share Booking
+          </button>
+        </div>
       `;
     } else {
       stage.innerHTML = `
@@ -1526,6 +1482,14 @@
             <span style="color:#6ee7b7;">ZERO MARKUP</span>
           </div>
         </aside>
+        <div class="pass-actions-bar" style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap;">
+          <button type="button" id="issue-pass-stamp-btn" class="btn btn-sm btn-stamp">
+            ★ Validate e-Ticket
+          </button>
+          <button type="button" id="copy-pass-link-btn" class="btn btn-sm btn-secondary">
+            🔗 Share Ticket
+          </button>
+        </div>
       `;
     }
 
@@ -1743,13 +1707,15 @@
      5. Living Atmosphere Themes, Circular Liquid Morph, Particles & Tilt
      ------------------------------------------------------------------------ */
   const THEME_META = {
-    horizon: { icon: '🌅', title: 'Golden Horizon', sub: 'Sunlit Editorial Daylight' },
-    aurora: { icon: '🌌', title: 'Aurora Borealis', sub: 'Nordic Midnight Northern Lights' },
-    sahara: { icon: '🏜️', title: 'Sahara Dusk', sub: 'Desert Gold Velvet & Embers' },
-    monaco: { icon: '👑', title: 'Monaco Grand Luxe', sub: 'Imperial Emerald & 24K Champagne Gold' },
-    santorini: { icon: '👑', title: 'Monaco Grand Luxe', sub: 'Imperial Emerald & 24K Champagne Gold' },
-    tokyo: { icon: '⚡', title: 'Tokyo Cyber Neon', sub: 'Midnight Obsidian & Laser Cyberpunk' },
-    kyoto: { icon: '🌸', title: 'Kyoto Twilight', sub: 'Sakura Petals & Lantern Ink' }
+    horizon: { icon: '☀️', title: 'Editorial Alabaster', sub: 'Sunlit Daylight & Crystal Glass' },
+    light: { icon: '☀️', title: 'Editorial Alabaster', sub: 'Sunlit Daylight & Crystal Glass' },
+    monaco: { icon: '🌙', title: 'Architectural Obsidian', sub: 'Midnight Ink & Amber Glass' },
+    dark: { icon: '🌙', title: 'Architectural Obsidian', sub: 'Midnight Ink & Amber Glass' },
+    aurora: { icon: '🌙', title: 'Architectural Obsidian', sub: 'Midnight Ink & Amber Glass' },
+    sahara: { icon: '🌙', title: 'Architectural Obsidian', sub: 'Midnight Ink & Amber Glass' },
+    santorini: { icon: '🌙', title: 'Architectural Obsidian', sub: 'Midnight Ink & Amber Glass' },
+    tokyo: { icon: '🌙', title: 'Architectural Obsidian', sub: 'Midnight Ink & Amber Glass' },
+    kyoto: { icon: '🌙', title: 'Architectural Obsidian', sub: 'Midnight Ink & Amber Glass' }
   };
 
   let themeBannerTimer = null;
@@ -1842,12 +1808,31 @@
     }, 1850);
   }
 
-  function applyTheme(triggerBtn) {
+  function updateThemeToggleUI() {
+    const isLight = state.theme === 'light' || state.theme === 'horizon';
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    const labelEl = document.getElementById('theme-mode-text');
+    if (toggleBtn) {
+      toggleBtn.classList.toggle('is-light', isLight);
+      toggleBtn.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+    }
+    if (labelEl) {
+      labelEl.textContent = isLight ? 'Light' : 'Dark';
+    }
+  }
+
+  function applyTheme(triggerBtn, explicitTheme) {
+    if (explicitTheme) {
+      state.theme = explicitTheme;
+      saveState();
+    }
     const commitTheme = () => {
       document.documentElement.dataset.theme = state.theme;
+      document.documentElement.setAttribute('data-theme', state.theme);
       document.querySelectorAll('[data-set-theme]').forEach((btn) => {
         btn.classList.toggle('is-active', btn.dataset.setTheme === state.theme);
       });
+      updateThemeToggleUI();
     };
 
     if (!triggerBtn) {
@@ -1911,6 +1896,8 @@
 
     showThemeStageBanner(state.theme);
   }
+  window.Miravoya.applyTheme = applyTheme;
+  window.Miravoya.updateThemeToggleUI = updateThemeToggleUI;
 
   function initBoardingPassTilt() {
     const pass = document.getElementById('active-tilt-pass');
@@ -2019,6 +2006,24 @@
       refreshAllMoney();
       notify(`Prices updated to ${state.currency}`);
     });
+
+    // Glassy Light / Dark Theme Switcher
+    updateThemeToggleUI();
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+      themeBtn.onclick = (e) => {
+        e.preventDefault();
+        if (typeof window.toggleMiravoyaTheme === 'function') {
+          window.toggleMiravoyaTheme(themeBtn);
+        } else {
+          const isCurrentlyLight = state.theme === 'light' || state.theme === 'horizon';
+          state.theme = isCurrentlyLight ? 'monaco' : 'horizon';
+          saveState();
+          applyTheme(themeBtn);
+          updateThemeToggleUI();
+        }
+      };
+    }
 
     // Google Maps Live GPS Tracking, Exact Pin Calibrator, Search & Map/Satellite/Hybrid Layer Controls
     document.getElementById('gmap-live-btn')?.addEventListener('click', () => {
@@ -2241,7 +2246,13 @@
 
     initTravelPreloaderAndScrollPlane();
     initInteractivePolish();
+    initNavMoreDropdown();
     initSpotlightCommandPalette();
+    initSurpriseRoulette();
+    initFlightTrajectory();
+    initMagneticTiltPhysics();
+    initBoardingPassActions();
+    initQuickDock();
     renderScopesAndCategories();
     initAutomaticLiveMap();
     renderExplore();
@@ -2325,6 +2336,51 @@
   }
 
   /* ------------------------------------------------------------------------
+     5b. Top Navigation "More" Dropdown Controller
+     ------------------------------------------------------------------------ */
+  function initNavMoreDropdown() {
+    const wrap = document.getElementById('nav-more-dropdown-wrap');
+    const btn = document.getElementById('nav-more-btn');
+    const menu = document.getElementById('nav-more-menu');
+    if (!wrap || !btn || !menu) return;
+
+    function toggleMenu(forceOpen) {
+      const willOpen = forceOpen !== undefined ? forceOpen : !wrap.classList.contains('is-open');
+      wrap.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    }
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    // Close when clicking any menu item and allow default navigation or trigger
+    menu.addEventListener('click', (e) => {
+      const item = e.target.closest('.dropdown-menu-item');
+      if (item) {
+        toggleMenu(false);
+      }
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!wrap.contains(e.target) && wrap.classList.contains('is-open')) {
+        toggleMenu(false);
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && wrap.classList.contains('is-open')) {
+        toggleMenu(false);
+        btn.focus();
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------------------
      6. Universal ⌘K / Ctrl+K Travel Spotlight Command Palette
      ------------------------------------------------------------------------ */
   function initSpotlightCommandPalette() {
@@ -2342,6 +2398,37 @@
     );
 
     const quickActions = [
+      {
+        icon: '🎲',
+        title: 'Roll Surprise Journey Satellite Roulette',
+        sub: 'Randomly calibrate and teleport to an extraordinary destination',
+        keywords: 'surprise roulette random spin take me anywhere lucky teleport roll destination',
+        run: () => window.Miravoya.openSurpriseRoulette?.()
+      },
+      {
+        icon: '✈️',
+        title: 'Simulate Supersonic Flight Trajectory',
+        sub: 'Live great-circle flight arc, distance in KM & cruising speed from your GPS',
+        keywords: 'flight trajectory arc radar distance km supersonic airspeed airport iata avionics',
+        run: () => window.Miravoya.openFlightTrajectory?.()
+      },
+      {
+        icon: '🌓',
+        title: 'Toggle Luxury Light / Dark Mode',
+        sub: 'Switch between Editorial Alabaster & Architectural Obsidian editions',
+        keywords: 'theme toggle light dark mode switch alabaster obsidian day night',
+        run: () => window.toggleMiravoyaTheme?.()
+      },
+      {
+        icon: '★',
+        title: 'Validate & Stamp Boarding Pass',
+        sub: 'Issue official verified digital passenger ticket & copy share link',
+        keywords: 'stamp boarding pass ticket validate verify seal passenger seat',
+        run: () => {
+          document.getElementById('book-section')?.scrollIntoView({ behavior: 'smooth' });
+          setTimeout(() => document.getElementById('issue-pass-stamp-btn')?.click(), 400);
+        }
+      },
       {
         icon: '💼',
         title: 'Open Master Travel Vault & Profile',
@@ -2534,6 +2621,8 @@
             }
 
             openBtn?.addEventListener('click', openSpotlight);
+            document.getElementById('hero-spotlight-btn')?.addEventListener('click', openSpotlight);
+            document.getElementById('dock-spotlight-btn')?.addEventListener('click', openSpotlight);
             backdrop.addEventListener('click', (e) => {
               if (e.target === backdrop) closeSpotlight();
             });
@@ -2582,4 +2671,415 @@
               }
             });
           }
+
+  /* ------------------------------------------------------------------------
+     7. Interactive Action Suites: Haptics, Confetti, Satellite Roulette,
+        Avionics Trajectory, 3D Magnetic Card Parallax & Boarding Stamp
+     ------------------------------------------------------------------------ */
+
+  const DEST_COORDS = {
+    'ooty-coonoor': { lat: 11.4102, lon: 76.6950, iata: 'CJB' },
+    'madurai': { lat: 9.9252, lon: 78.1198, iata: 'IXM' },
+    'rameswaram': { lat: 9.2876, lon: 79.3129, iata: 'RMD' },
+    'kanyakumari': { lat: 8.0883, lon: 77.5385, iata: 'TRV' },
+    'kodaikanal': { lat: 10.2381, lon: 77.4892, iata: 'IXM' },
+    'thanjavur': { lat: 10.7870, lon: 79.1378, iata: 'TRZ' },
+    'mahabilipuram': { lat: 12.6269, lon: 80.1927, iata: 'MAA' },
+    'chennai': { lat: 13.0827, lon: 80.2707, iata: 'MAA' },
+    'kerala-munnar': { lat: 10.0889, lon: 77.0595, iata: 'COK' },
+    'goa': { lat: 15.2993, lon: 74.1240, iata: 'GOI' },
+    'kashmir': { lat: 34.0837, lon: 74.7973, iata: 'SXR' },
+    'jaipur': { lat: 26.9124, lon: 75.7873, iata: 'JAI' },
+    'ladakh': { lat: 34.1526, lon: 77.5771, iata: 'IXL' },
+    'varanasi': { lat: 25.3176, lon: 82.9739, iata: 'VNS' },
+    'andaman': { lat: 11.6234, lon: 92.7265, iata: 'IXZ' },
+    'kyoto': { lat: 35.0116, lon: 135.7681, iata: 'KIX' },
+    'santorini': { lat: 36.3932, lon: 25.4615, iata: 'JTR' },
+    'dubai': { lat: 25.2048, lon: 55.2708, iata: 'DXB' },
+    'swiss-alps': { lat: 46.8182, lon: 8.2275, iata: 'ZRH' },
+    'bali': { lat: -8.3405, lon: 115.0920, iata: 'DPS' },
+    'paris': { lat: 48.8566, lon: 2.3522, iata: 'CDG' },
+    'tokyo': { lat: 35.6762, lon: 139.6503, iata: 'HND' },
+    'queenstown': { lat: -45.0312, lon: 168.6626, iata: 'ZQN' },
+    'singapore': { lat: 1.3521, lon: 103.8198, iata: 'SIN' },
+    'maldives': { lat: 3.2028, lon: 73.2207, iata: 'MLE' }
+  };
+
+  function calcDistanceKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Math.round(R * c);
+  }
+
+  let hapticAudioCtx = null;
+  function playMicroHaptic(type = 'click') {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      if (!hapticAudioCtx) hapticAudioCtx = new AudioCtx();
+      if (hapticAudioCtx.state === 'suspended') hapticAudioCtx.resume();
+      const now = hapticAudioCtx.currentTime;
+      const osc = hapticAudioCtx.createOscillator();
+      const gain = hapticAudioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(hapticAudioCtx.destination);
+      if (type === 'chime') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.16);
+        gain.gain.setValueAtTime(0.09, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+        osc.start(now);
+        osc.stop(now + 0.38);
+      } else {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(340, now);
+        osc.frequency.exponentialRampToValueAtTime(90, now + 0.038);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        osc.start(now);
+        osc.stop(now + 0.04);
+      }
+    } catch (_) { }
+  }
+
+  function triggerCelebrationConfetti(originX, originY) {
+    const count = 32;
+    const colors = ['#f59e0b', '#10b981', '#38bdf8', '#e09f3e', '#ec4899', '#ffffff'];
+    const cx = originX || window.innerWidth / 2;
+    const cy = originY || window.innerHeight / 2;
+    const frag = document.createDocumentFragment();
+
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('span');
+      p.className = 'confetti-particle';
+      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+      const velocity = 80 + Math.random() * 140;
+      const dx = Math.cos(angle) * velocity;
+      const dy = Math.sin(angle) * velocity - 30;
+      const rot = Math.random() * 720 - 360;
+      const color = colors[i % colors.length];
+      const size = 6 + Math.random() * 6;
+
+      p.style.cssText = `
+        position: fixed;
+        left: ${cx}px;
+        top: ${cy}px;
+        width: ${size}px;
+        height: ${size * (Math.random() > 0.5 ? 1.6 : 1)}px;
+        background: ${color};
+        border-radius: ${Math.random() > 0.4 ? '2px' : '50%'};
+        pointer-events: none;
+        z-index: 99999;
+        transform: translate3d(0, 0, 0) rotate(0deg);
+        transition: transform 1.1s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 1.1s ease;
+      `;
+      frag.appendChild(p);
+
+      requestAnimationFrame(() => {
+        p.style.transform = `translate3d(${dx}px, ${dy + 140}px, 0) rotate(${rot}deg) scale(0.6)`;
+        p.style.opacity = '0';
+      });
+
+      setTimeout(() => p.remove(), 1200);
+    }
+    document.body.appendChild(frag);
+  }
+
+  function initSurpriseRoulette() {
+    const modal = document.getElementById('surprise-roulette-modal');
+    const closeBtn = document.getElementById('roulette-close-btn');
+    const spinAgainBtn = document.getElementById('roulette-spin-again-btn');
+    const teleportBtn = document.getElementById('roulette-teleport-btn');
+    const guideBtn = document.getElementById('roulette-guide-btn');
+    const emojiEl = document.getElementById('roulette-emoji');
+    const nameEl = document.getElementById('roulette-dest-name');
+    const coordsEl = document.getElementById('roulette-coords');
+    const metaEl = document.getElementById('roulette-meta');
+    if (!modal) return;
+
+    let rollTimer = null;
+    let winningDest = null;
+
+    function openRoulette() {
+      modal.hidden = false;
+      modal.classList.add('is-open');
+      startSpin();
+    }
+
+    function closeRoulette() {
+      clearTimeout(rollTimer);
+      modal.classList.remove('is-open');
+      setTimeout(() => { modal.hidden = true; }, 260);
+    }
+
+    function startSpin() {
+      clearTimeout(rollTimer);
+      if (teleportBtn) teleportBtn.style.display = 'none';
+      if (guideBtn) guideBtn.style.display = 'none';
+      if (metaEl) metaEl.textContent = 'Scanning 45 global destinations...';
+
+      const pool = DESTINATIONS.slice();
+      let step = 0;
+      const totalSteps = 16;
+      let delay = 60;
+
+      function tick() {
+        const d = pool[Math.floor(Math.random() * pool.length)];
+        const coords = DEST_COORDS[d.id] || { lat: 15.0 + Math.random() * 20, lon: 75.0 + Math.random() * 20 };
+        if (emojiEl) emojiEl.textContent = d.icon || '🌍';
+        if (nameEl) nameEl.textContent = d.name;
+        if (coordsEl) coordsEl.textContent = `LAT: ${coords.lat.toFixed(4)}° · LON: ${coords.lon.toFixed(4)}°`;
+        playMicroHaptic('click');
+        step++;
+
+        if (step < totalSteps) {
+          delay += 14;
+          rollTimer = setTimeout(tick, delay);
+        } else {
+          winningDest = d;
+          if (emojiEl) emojiEl.textContent = d.icon || '🌟';
+          if (nameEl) nameEl.textContent = d.name;
+          if (coordsEl) coordsEl.textContent = `LOCKED: ${d.country.toUpperCase()}`;
+          if (metaEl) metaEl.innerHTML = `<strong>${formatMoney(d.dailyUsd)}/day</strong> · Best Season: ${d.bestSeason} · ${d.category || 'Featured'}`;
+          if (teleportBtn) teleportBtn.style.display = 'inline-flex';
+          if (guideBtn) guideBtn.style.display = 'inline-flex';
+          playMicroHaptic('chime');
+          const rect = nameEl?.getBoundingClientRect();
+          triggerCelebrationConfetti(rect ? rect.left + rect.width / 2 : undefined, rect ? rect.top : undefined);
+        }
+      }
+      tick();
+    }
+
+    closeBtn?.addEventListener('click', closeRoulette);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeRoulette();
+    });
+    spinAgainBtn?.addEventListener('click', startSpin);
+
+    teleportBtn?.addEventListener('click', () => {
+      if (!winningDest) return;
+      closeRoulette();
+      state.activeMapId = winningDest.id;
+      liveGpsFollowing = false;
+      renderWorldMap(false, true);
+      document.getElementById('google-map-stage')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      notify(`Teleported to ${winningDest.name}! Map calibrated.`);
+    });
+
+    guideBtn?.addEventListener('click', () => {
+      if (!winningDest) return;
+      closeRoulette();
+      openFullGuide(winningDest.id);
+    });
+
+    document.getElementById('hero-surprise-btn')?.addEventListener('click', openRoulette);
+    document.getElementById('gmap-surprise-btn')?.addEventListener('click', openRoulette);
+    document.getElementById('dock-surprise-btn')?.addEventListener('click', openRoulette);
+    window.Miravoya.openSurpriseRoulette = openRoulette;
+  }
+
+  function initFlightTrajectory() {
+    const modal = document.getElementById('flight-trajectory-modal');
+    const closeBtn = document.getElementById('flight-hud-close-btn');
+    const bookBtn = document.getElementById('flight-hud-book-btn');
+    const passBtn = document.getElementById('flight-hud-pass-btn');
+    if (!modal) return;
+
+    function openTrajectory() {
+      const dest = DESTINATIONS.find((d) => d.id === state.activeMapId) || DESTINATIONS[0];
+      const origName = livePos ? (livePos.label || 'Chennai Metropolitan Area') : 'Chennai, India';
+      const origIata = livePos ? 'GPS' : 'MAA';
+      const origLat = livePos ? livePos.lat : 13.0827;
+      const origLon = livePos ? livePos.lng : 80.2707;
+
+      const destCoord = DEST_COORDS[dest.id] || { lat: 12.9716, lon: 77.5946, iata: dest.code || 'DST' };
+      const distKm = calcDistanceKm(origLat, origLon, destCoord.lat, destCoord.lon);
+      const hours = Math.floor(distKm / 820);
+      const mins = Math.round(((distKm % 820) / 820) * 60) + 35;
+
+      const origIataEl = document.getElementById('flight-orig-iata');
+      const origCityEl = document.getElementById('flight-orig-city');
+      const destIataEl = document.getElementById('flight-dest-iata');
+      const destCityEl = document.getElementById('flight-dest-city');
+      const vectorDistEl = document.getElementById('flight-vector-dist');
+      const durationEl = document.getElementById('flight-tel-duration');
+
+      if (origIataEl) origIataEl.textContent = origIata;
+      if (origCityEl) origCityEl.textContent = origName.split(',')[0];
+      if (destIataEl) destIataEl.textContent = dest.code || destCoord.iata;
+      if (destCityEl) destCityEl.textContent = `${dest.name}, ${dest.country}`;
+      if (vectorDistEl) vectorDistEl.textContent = `${distKm.toLocaleString()} KM · ${(Math.round(distKm * 0.539957)).toLocaleString()} NM`;
+      if (durationEl) durationEl.textContent = `${hours}h ${mins}m Direct Flight`;
+
+      modal.hidden = false;
+      modal.classList.add('is-open');
+      playMicroHaptic('chime');
+    }
+
+    function closeTrajectory() {
+      modal.classList.remove('is-open');
+      setTimeout(() => { modal.hidden = true; }, 260);
+    }
+
+    closeBtn?.addEventListener('click', closeTrajectory);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeTrajectory();
+    });
+
+    bookBtn?.addEventListener('click', () => {
+      closeTrajectory();
+      const dest = DESTINATIONS.find((d) => d.id === state.activeMapId) || DESTINATIONS[0];
+      const gfQuery = `flights from Chennai to ${dest.name} ${dest.country}`;
+      window.open(`https://www.google.com/travel/flights?q=${encodeURIComponent(gfQuery)}`, '_blank', 'noopener,noreferrer');
+    });
+
+    passBtn?.addEventListener('click', () => {
+      closeTrajectory();
+      document.getElementById('book-section')?.scrollIntoView({ behavior: 'smooth' });
+      state.bookingTab = 'flights';
+      renderBookingStudio();
+    });
+
+    document.getElementById('gmap-trajectory-btn')?.addEventListener('click', openTrajectory);
+    document.getElementById('dock-trajectory-btn')?.addEventListener('click', openTrajectory);
+    window.Miravoya.openFlightTrajectory = openTrajectory;
+  }
+
+  function initMagneticTiltPhysics() {
+    let activeCard = null;
+    let cardRect = null;
+    let rafId = null;
+
+    document.addEventListener('pointermove', (e) => {
+      const card = e.target.closest('.dest-card, .map-stage, .ticket-animated, .scope-card');
+      if (!card) {
+        if (activeCard) {
+          activeCard.style.transform = '';
+          activeCard = null;
+        }
+        return;
+      }
+
+      if (card !== activeCard) {
+        if (activeCard) activeCard.style.transform = '';
+        activeCard = card;
+        cardRect = card.getBoundingClientRect();
+      }
+
+      if (!cardRect) return;
+
+      const x = (e.clientX - cardRect.left) / cardRect.width - 0.5;
+      const y = (e.clientY - cardRect.top) / cardRect.height - 0.5;
+      const tiltX = -y * 8;
+      const tiltY = x * 8;
+      const glareX = ((x + 0.5) * 100).toFixed(1);
+      const glareY = ((y + 0.5) * 100).toFixed(1);
+
+      card.style.setProperty('--glare-x', `${glareX}%`);
+      card.style.setProperty('--glare-y', `${glareY}%`);
+
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          if (activeCard) {
+            activeCard.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) translateZ(4px)`;
+          }
+          rafId = null;
+        });
+      }
+    }, { passive: true });
+
+    document.addEventListener('pointerleave', () => {
+      if (activeCard) {
+        activeCard.style.transform = '';
+        activeCard = null;
+      }
+    });
+  }
+
+  function initBoardingPassActions() {
+    document.addEventListener('click', (e) => {
+      const stampBtn = e.target.closest('#issue-pass-stamp-btn');
+      if (stampBtn) {
+        const pass = document.getElementById('active-tilt-pass');
+        if (!pass) return;
+        let seal = pass.querySelector('.pass-official-stamp');
+        if (!seal) {
+          seal = document.createElement('div');
+          seal.className = 'pass-official-stamp';
+          seal.innerHTML = `
+            <div class="stamp-border">
+              <span class="stamp-star">★ ★ ★</span>
+              <span class="stamp-title">MIRAVOYA VERIFIED</span>
+              <span class="stamp-sub">OFFICIAL PASSENGER PASS · 02A</span>
+              <span class="stamp-code">CERT #${Math.random().toString(36).substring(2, 8).toUpperCase()}</span>
+            </div>
+          `;
+          pass.appendChild(seal);
+        }
+        seal.classList.remove('is-stamped');
+        void seal.offsetWidth;
+        seal.classList.add('is-stamped');
+        playMicroHaptic('chime');
+        const rect = seal.getBoundingClientRect();
+        triggerCelebrationConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        notify('★ Boarding Pass validated & stamped with official seal!');
+        return;
+      }
+
+      const copyBtn = e.target.closest('#copy-pass-link-btn');
+      if (copyBtn) {
+        const dest = DESTINATIONS.find((d) => d.id === state.activeMapId) || DESTINATIONS[0];
+        const shareUrl = `${window.location.origin}${window.location.pathname}#book-section`;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            playMicroHaptic('click');
+            notify(`Copied ${dest.name} Boarding Pass link to clipboard!`);
+          }).catch(() => {
+            notify(`Share link: ${shareUrl}`);
+          });
+        }
+      }
+    });
+  }
+
+  function initQuickDock() {
+    const dock = document.getElementById('miravoya-quick-dock');
+    if (!dock) return;
+
+    document.getElementById('dock-surprise-btn')?.addEventListener('click', () => {
+      window.Miravoya.openSurpriseRoulette?.();
+    });
+    document.getElementById('dock-trajectory-btn')?.addEventListener('click', () => {
+      window.Miravoya.openFlightTrajectory?.();
+    });
+    document.getElementById('dock-spotlight-btn')?.addEventListener('click', () => {
+      document.getElementById('spotlight-backdrop')?.classList.add('is-open');
+      const inp = document.getElementById('spotlight-input');
+      if (inp) {
+        inp.value = '';
+        setTimeout(() => inp.focus(), 40);
+      }
+    });
+    document.getElementById('hero-spotlight-btn')?.addEventListener('click', () => {
+      document.getElementById('spotlight-backdrop')?.classList.add('is-open');
+      const inp = document.getElementById('spotlight-input');
+      if (inp) {
+        inp.value = '';
+        setTimeout(() => inp.focus(), 40);
+      }
+    });
+    document.getElementById('dock-theme-btn')?.addEventListener('click', (e) => {
+      window.toggleMiravoyaTheme?.(e.currentTarget);
+    });
+    document.getElementById('dock-top-btn')?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 }) ();

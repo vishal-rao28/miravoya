@@ -1,291 +1,151 @@
 /* ==========================================================================
-   TERRAVOYAGE — Living Atmospheric Travel Themes
-   1. Golden Horizon (Sunlit Editorial Daylight)
-   2. Aurora Borealis (Nordic Midnight + Emerald/Cyan Aurora)
-   3. Sahara Dusk (Volcanic Espresso + Molten Amber Gold)
-   4. Monaco Grand Luxe (Royal Emerald Velvet & 24K Champagne Gold)
-   5. Kyoto Twilight (Indigo Ink + Sakura Blossom & Lantern Gold)
-   6. Tokyo Cyber Neon (Midnight Obsidian & High-Voltage Laser Cyberpunk)
+   MIRAVOYA — Dual Architectural Design System (Dark & Light)
+   Crafted with Frosted Glassmorphism, Specular Highlights & Physics-Eased Transitions
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   DARK ARCHITECTURAL EDITION (DEFAULT)
+   Obsidian Base (#090b10), Frosted Slate Glass, Warm Amber/Brass Accent
+   -------------------------------------------------------------------------- */
 :root,
-[data-theme="horizon"] {
-  --bg-canvas: #f7f3eb;
-  --bg-surface: rgba(255, 255, 255, 0.84);
-  --bg-surface-solid: #ffffff;
-  --bg-subtle: rgba(244, 238, 227, 0.78);
-  --bg-inset: #e9e2d3;
-  --bg-hero: linear-gradient(135deg, #072f3d 0%, #0d4a5e 48%, #1d3557 100%);
+html,
+html[data-theme="dark"],
+html[data-theme="monaco"],
+html[data-theme="aurora"],
+html[data-theme="sahara"],
+html[data-theme="tokyo"],
+html[data-theme="kyoto"] {
+  color-scheme: dark;
 
-  --sky-1: rgba(244, 185, 66, 0.24);
-  --sky-2: rgba(14, 90, 109, 0.16);
-  --sky-3: rgba(217, 93, 57, 0.15);
+  /* Surfaces: Deep Midnight Obsidian Ramp */
+  --bg-canvas: #090b10;
+  --bg-surface: rgba(18, 22, 33, 0.74);
+  --bg-surface-solid: #121622;
+  --bg-subtle: rgba(28, 34, 52, 0.6);
+  --bg-inset: rgba(9, 11, 17, 0.85);
+  --bg-hero: #0e111a;
 
-  --ink-primary: #121a22;
-  --ink-secondary: #485664;
-  --ink-muted: #748291;
-  --ink-on-dark: #faf7f2;
-  --ink-on-teal: #ffffff;
+  /* Atmosphere FX Disabled (quiet matte canvas) */
+  --sky-1: transparent;
+  --sky-2: transparent;
+  --sky-3: transparent;
 
-  --border-subtle: rgba(18, 26, 34, 0.09);
-  --border-medium: rgba(18, 26, 34, 0.16);
-  --specular-top: rgba(255, 255, 255, 0.85);
+  /* Typography Roles */
+  --ink-primary: #f0f3f8;
+  --ink-secondary: #9ca5b8;
+  --ink-muted: #5c657a;
+  --ink-on-dark: #f0f3f8;
+  --ink-on-teal: #090b10;
 
-  --teal: #0e5a6d;
-  --teal-hover: #0a4655;
-  --teal-soft: rgba(14, 90, 109, 0.11);
-  --terracotta: #d95d39;
-  --terracotta-hover: #bf4826;
-  --terracotta-soft: rgba(217, 93, 57, 0.12);
-  --gold: #d49b2a;
-  --gold-soft: rgba(212, 155, 42, 0.16);
-  --sage: #1a8b64;
-  --sage-soft: rgba(26, 139, 100, 0.12);
-
-  --font-serif: 'Fraunces', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-
-  --radius-xs: 9px;
-  --radius-sm: 13px;
-  --radius-md: 20px;
-  --radius-lg: 28px;
-  --radius-pill: 999px;
-
-  --shadow-sm: 0 6px 20px rgba(15, 32, 46, 0.06), inset 0 1px 0 var(--specular-top);
-  --shadow-md: 0 18px 42px rgba(15, 32, 46, 0.12), inset 0 1px 0 var(--specular-top);
-  --shadow-lg: 0 30px 72px rgba(10, 22, 34, 0.22);
-
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Theme 2: Aurora Borealis (Innovative Nordic Midnight Glass) */
-[data-theme="aurora"] {
-  --bg-canvas: #060b14;
-  --bg-surface: rgba(15, 24, 38, 0.72);
-  --bg-surface-solid: #101928;
-  --bg-subtle: rgba(22, 34, 54, 0.72);
-  --bg-inset: #0b1220;
-  --bg-hero: linear-gradient(135deg, #061b26 0%, #0c2e3d 45%, #161d3a 100%);
-
-  --sky-1: rgba(52, 211, 153, 0.22);
-  --sky-2: rgba(56, 189, 248, 0.2);
-  --sky-3: rgba(139, 92, 246, 0.18);
-
-  --ink-primary: #f1f6fb;
-  --ink-secondary: #a2b5c9;
-  --ink-muted: #6e8399;
-  --ink-on-dark: #f1f6fb;
-  --ink-on-teal: #041923;
-
-  --border-subtle: rgba(148, 197, 255, 0.11);
-  --border-medium: rgba(148, 197, 255, 0.22);
+  /* Hairlines & Borders */
+  --border-subtle: rgba(240, 243, 248, 0.08);
+  --border-medium: rgba(240, 243, 248, 0.14);
+  --border-accent: rgba(224, 159, 62, 0.35);
   --specular-top: rgba(255, 255, 255, 0.12);
 
-  --teal: #38bdf8;
-  --teal-hover: #7dd3fc;
-  --teal-soft: rgba(56, 189, 248, 0.16);
-  --terracotta: #34d399;
-  --terracotta-hover: #6ee7b7;
-  --terracotta-soft: rgba(52, 211, 153, 0.16);
-  --gold: #facc15;
-  --gold-soft: rgba(250, 204, 21, 0.16);
-  --sage: #2dd4bf;
-  --sage-soft: rgba(45, 212, 191, 0.16);
+  /* Single Accent: Architectural Warm Amber / Brass */
+  --teal: #e09f3e;
+  --teal-hover: #f0a842;
+  --teal-soft: rgba(224, 159, 62, 0.14);
+  --terracotta: #c46d3b;
+  --terracotta-hover: #d97d4b;
+  --terracotta-soft: rgba(196, 109, 59, 0.14);
+  --gold: #e09f3e;
+  --gold-soft: rgba(224, 159, 62, 0.15);
+  --sage: #2da878;
+  --sage-soft: rgba(45, 168, 120, 0.14);
 
-  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 var(--specular-top);
-  --shadow-md: 0 22px 48px rgba(0, 0, 0, 0.56), inset 0 1px 0 var(--specular-top);
-  --shadow-lg: 0 32px 80px rgba(0, 0, 0, 0.72);
+  /* Glassmorphism System */
+  --glass-bg: rgba(18, 22, 34, 0.72);
+  --glass-bg-hover: rgba(24, 30, 46, 0.82);
+  --glass-border: rgba(240, 243, 248, 0.1);
+  --glass-border-hover: rgba(224, 159, 62, 0.4);
+  --glass-highlight: rgba(255, 255, 255, 0.14);
+  --glass-glow: rgba(0, 0, 0, 0.55);
+  --glass-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  --glass-blur: blur(24px) saturate(180%);
+
+  /* Depth */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 44px rgba(0, 0, 0, 0.65);
+
+  /* Typography Stack */
+  --font-serif: "Fraunces", -apple-system, BlinkMacSystemFont, "Segoe UI", serif;
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Architectural Nested Geometry */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 8px;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Theme 3: Sahara Dusk (Luxury Desert Velvet & Molten Gold) */
-[data-theme="sahara"] {
-  --bg-canvas: #130d0b;
-  --bg-surface: rgba(31, 22, 19, 0.76);
-  --bg-surface-solid: #1f1613;
-  --bg-subtle: rgba(44, 31, 26, 0.75);
-  --bg-inset: #19110e;
-  --bg-hero: linear-gradient(135deg, #2d140e 0%, #4b1f14 48%, #22141a 100%);
+/* --------------------------------------------------------------------------
+   LIGHT ARCHITECTURAL EDITION (EDITORIAL ALABASTER)
+   Warm Ceramic Canvas (#f7f9fd), Optic Crystal Frosted Glass, Deep Obsidian Ink (#0b1120),
+   Radiant Cognac Amber Accent (#b86218) & Specular Light Highlights
+   -------------------------------------------------------------------------- */
+html[data-theme="light"],
+html[data-theme="horizon"] {
+  color-scheme: light;
 
-  --sky-1: rgba(245, 158, 11, 0.24);
-  --sky-2: rgba(234, 88, 12, 0.22);
-  --sky-3: rgba(190, 24, 93, 0.14);
+  /* Surfaces: Editorial Warm Alabaster & Optic Frosted Crystal Glass */
+  --bg-canvas: #f7f9fd;
+  --bg-surface: rgba(255, 255, 255, 0.88);
+  --bg-surface-solid: #ffffff;
+  --bg-subtle: rgba(243, 246, 251, 0.95);
+  --bg-inset: #eef2f7;
+  --bg-hero: #ffffff;
 
-  --ink-primary: #fdf7f0;
-  --ink-secondary: #cbb8a8;
-  --ink-muted: #937d6c;
-  --ink-on-dark: #fdf7f0;
-  --ink-on-teal: #1c0f06;
+  /* Atmosphere FX: Soft sunlit amber & morning sky warmth */
+  --sky-1: rgba(217, 130, 43, 0.08);
+  --sky-2: rgba(56, 189, 248, 0.05);
+  --sky-3: rgba(245, 158, 11, 0.04);
 
-  --border-subtle: rgba(245, 185, 110, 0.12);
-  --border-medium: rgba(245, 185, 110, 0.24);
-  --specular-top: rgba(255, 214, 153, 0.14);
+  /* Typography Roles: Deep Obsidian Ink with razor-sharp contrast */
+  --ink-primary: #0b1120;
+  --ink-secondary: #334155;
+  --ink-muted: #64748b;
+  --ink-on-dark: #0b1120;
+  --ink-on-teal: #ffffff;
 
-  --teal: #f59e0b;
-  --teal-hover: #fbbf24;
-  --teal-soft: rgba(245, 158, 11, 0.16);
-  --terracotta: #f97316;
-  --terracotta-hover: #fb923c;
-  --terracotta-soft: rgba(249, 115, 22, 0.18);
-  --gold: #fcd34d;
-  --gold-soft: rgba(252, 211, 77, 0.16);
-  --sage: #34d399;
-  --sage-soft: rgba(52, 211, 153, 0.14);
+  /* Hairlines & Borders */
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-medium: rgba(15, 23, 42, 0.14);
+  --border-accent: rgba(184, 98, 24, 0.4);
+  --specular-top: rgba(255, 255, 255, 0.98);
 
-  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.42), inset 0 1px 0 var(--specular-top);
-  --shadow-md: 0 22px 48px rgba(0, 0, 0, 0.58), inset 0 1px 0 var(--specular-top);
-  --shadow-lg: 0 32px 80px rgba(0, 0, 0, 0.74);
-}
+  /* Single Accent: Architectural Cognac Amber / Molten Bronze */
+  --teal: #b86218;
+  --teal-hover: #9e4e0e;
+  --teal-soft: rgba(184, 98, 24, 0.1);
+  --terracotta: #a85226;
+  --terracotta-hover: #8f3e18;
+  --terracotta-soft: rgba(168, 82, 38, 0.1);
+  --gold: #b86218;
+  --gold-soft: rgba(184, 98, 24, 0.12);
+  --sage: #059669;
+  --sage-soft: rgba(5, 150, 105, 0.12);
 
-/* Theme 4: Monaco Grand Luxe (Royal Emerald Velvet & 24K Champagne Gold) */
-[data-theme="monaco"],
-[data-theme="santorini"] {
-  --bg-canvas: #02140d;
-  --bg-surface: rgba(4, 28, 19, 0.78);
-  --bg-surface-solid: #052418;
-  --bg-subtle: rgba(9, 44, 30, 0.75);
-  --bg-inset: #021a11;
-  --bg-hero: linear-gradient(135deg, #022115 0%, #064e3b 45%, #143525 100%);
+  /* Glassmorphism System */
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-bg-hover: rgba(255, 255, 255, 0.98);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-border-hover: rgba(184, 98, 24, 0.45);
+  --glass-highlight: #ffffff;
+  --glass-glow: rgba(184, 98, 24, 0.08);
+  --glass-shadow: 0 16px 36px rgba(15, 23, 42, 0.06);
+  --glass-blur: blur(24px) saturate(190%);
 
-  --sky-1: rgba(16, 185, 129, 0.28);
-  --sky-2: rgba(234, 179, 8, 0.24);
-  --sky-3: rgba(5, 150, 105, 0.20);
-
-  --ink-primary: #f8fafc;
-  --ink-secondary: #cbd5e1;
-  --ink-muted: #94a3b8;
-  --ink-on-dark: #f8fafc;
-  --ink-on-teal: #02140d;
-
-  --border-subtle: rgba(234, 179, 8, 0.18);
-  --border-medium: rgba(234, 179, 8, 0.35);
-  --specular-top: rgba(254, 240, 138, 0.25);
-
-  --teal: #10b981;
-  --teal-hover: #34d399;
-  --teal-soft: rgba(16, 185, 129, 0.18);
-  --terracotta: #eab308;
-  --terracotta-hover: #fbbf24;
-  --terracotta-soft: rgba(234, 179, 8, 0.20);
-  --gold: #fde047;
-  --gold-soft: rgba(253, 224, 71, 0.24);
-  --sage: #34d399;
-  --sage-soft: rgba(52, 211, 153, 0.18);
-
-  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 var(--specular-top);
-  --shadow-md: 0 22px 52px rgba(0, 0, 0, 0.65), 0 0 20px rgba(16, 185, 129, 0.12), inset 0 1px 0 var(--specular-top);
-  --shadow-lg: 0 32px 84px rgba(0, 0, 0, 0.8), 0 0 36px rgba(234, 179, 8, 0.16);
-}
-
-/* Theme 5: Kyoto Twilight (Indigo Ink + Sakura Rose & Lantern Gold) */
-[data-theme="kyoto"] {
-  --bg-canvas: #100b1a;
-  --bg-surface: rgba(27, 19, 43, 0.74);
-  --bg-surface-solid: #1b132b;
-  --bg-subtle: rgba(38, 27, 58, 0.74);
-  --bg-inset: #150e24;
-  --bg-hero: linear-gradient(135deg, #251138 0%, #3d163c 50%, #1c1b3d 100%);
-
-  --sky-1: rgba(251, 113, 133, 0.22);
-  --sky-2: rgba(167, 139, 250, 0.22);
-  --sky-3: rgba(251, 191, 36, 0.16);
-
-  --ink-primary: #faf5ff;
-  --ink-secondary: #c6b6dc;
-  --ink-muted: #8b79a6;
-  --ink-on-dark: #faf5ff;
-  --ink-on-teal: #1d0914;
-
-  --border-subtle: rgba(251, 113, 133, 0.14);
-  --border-medium: rgba(251, 113, 133, 0.26);
-  --specular-top: rgba(255, 228, 240, 0.12);
-
-  --teal: #c084fc;
-  --teal-hover: #d8b4fe;
-  --teal-soft: rgba(192, 132, 252, 0.16);
-  --terracotta: #fb7185;
-  --terracotta-hover: #fda4af;
-  --terracotta-soft: rgba(251, 113, 133, 0.18);
-  --gold: #fbbf24;
-  --gold-soft: rgba(251, 191, 36, 0.16);
-  --sage: #34d399;
-  --sage-soft: rgba(52, 211, 153, 0.15);
-
-  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.44), inset 0 1px 0 var(--specular-top);
-  --shadow-md: 0 22px 48px rgba(0, 0, 0, 0.58), inset 0 1px 0 var(--specular-top);
-  --shadow-lg: 0 32px 80px rgba(0, 0, 0, 0.74);
-}
-
-/* Theme 6: Tokyo Cyber Neon (Midnight Obsidian & High-Voltage Laser Cyberpunk) */
-[data-theme="tokyo"] {
-  --bg-canvas: #06060c;
-  --bg-surface: rgba(13, 13, 26, 0.82);
-  --bg-surface-solid: #101022;
-  --bg-subtle: rgba(22, 22, 44, 0.78);
-  --bg-inset: #090914;
-  --bg-hero: linear-gradient(135deg, #070718 0%, #170d30 50%, #031c28 100%);
-
-  --sky-1: rgba(0, 240, 255, 0.26);
-  --sky-2: rgba(255, 0, 128, 0.22);
-  --sky-3: rgba(147, 51, 234, 0.20);
-
-  --ink-primary: #ffffff;
-  --ink-secondary: #cbd5e1;
-  --ink-muted: #818cf8;
-  --ink-on-dark: #ffffff;
-  --ink-on-teal: #06060c;
-
-  --border-subtle: rgba(0, 240, 255, 0.20);
-  --border-medium: rgba(0, 240, 255, 0.40);
-  --specular-top: rgba(0, 240, 255, 0.28);
-
-  --teal: #00f0ff;
-  --teal-hover: #38bdf8;
-  --teal-soft: rgba(0, 240, 255, 0.18);
-  --terracotta: #ff007f;
-  --terracotta-hover: #ff3399;
-  --terracotta-soft: rgba(255, 0, 127, 0.20);
-  --gold: #fde047;
-  --gold-soft: rgba(253, 224, 71, 0.20);
-  --sage: #00f0ff;
-  --sage-soft: rgba(0, 240, 255, 0.18);
-
-  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--specular-top);
-  --shadow-md: 0 22px 48px rgba(0, 0, 0, 0.72), 0 0 25px rgba(0, 240, 255, 0.18);
-  --shadow-lg: 0 32px 80px rgba(0, 0, 0, 0.88), 0 0 45px rgba(255, 0, 127, 0.22);
-}
-
-/* ==========================================================================
-   Atmospheric Motion & Keyframes
-   ========================================================================== */
-@keyframes skyDrift1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(6vw, 4vh) scale(1.12); }
-}
-
-@keyframes skyDrift2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-6vw, -5vh) scale(1.1); }
-}
-
-@keyframes pulsePin {
-  0%, 100% { transform: scale(1); opacity: 0.75; }
-  50% { transform: scale(2.1); opacity: 0; }
-}
-
-@keyframes drawRoute {
-  from { stroke-dashoffset: 620; }
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes foilShimmer {
-  0% { transform: translateX(-140%) skewX(-22deg); }
-  100% { transform: translateX(240%) skewX(-22deg); }
-}
-
-@keyframes ticketSlide {
-  from { opacity: 0; transform: translateY(14px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  /* Depth */
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.07);
+  --shadow-lg: 0 20px 48px rgba(15, 23, 42, 0.1);
 }
 
 @media (prefers-reduced-motion: reduce) {

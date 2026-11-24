@@ -151,8 +151,8 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles/tokens.css?v=940" />
-  <link rel="stylesheet" href="styles/main.css?v=940" />
+  <link rel="stylesheet" href="styles/tokens.css?v=950" />
+  <link rel="stylesheet" href="styles/main.css?v=950" />
   <script>
     (function () {
       try {
@@ -415,16 +415,6 @@
           <span class="sync-dot"></span>
           <span id="sync-status-text" class="sync-text">Live Synced</span>
         </div>
-
-        <!-- Quick Action & Search Trigger Button (⌘K) -->
-        <button type="button" id="spotlight-open-btn" class="nav-spotlight-btn" aria-label="Open Spotlight Command Palette (⌘K)" title="Quick Actions & Search (⌘K)">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <span class="spotlight-nav-label">Actions</span>
-          <kbd class="spotlight-nav-kbd">⌘K</kbd>
-        </button>
 
         <select id="currency-select" class="select-pill" aria-label="Display currency">
           <option value="INR">INR ₹</option>
@@ -2262,12 +2252,6 @@
   <!-- Hidden Print Container for High-Fidelity Vector PDF Export -->
   <div id="print-statement-container" aria-hidden="true" style="display:none;"></div>
 
-  <!-- Floating Back-to-Top Jet Button -->
-  <button type="button" id="back-to-top-btn" class="back-to-top-fab" aria-label="Scroll back to top"
-    title="Back to top">
-    <span class="fab-jet" aria-hidden="true">✈</span>
-  </button>
-
   <!-- Sticky Mobile Bottom Tab Bar (One-Thumb Navigation) -->
   <nav id="mobile-bottom-bar" class="mobile-bottom-bar" aria-label="Mobile quick navigation">
     <a href="#explore-section" class="mbb-item is-active" data-mbb-target="explore-section">
@@ -2329,11 +2313,11 @@
   <script defer src="js/extras.js?v=6"></script>
   <script defer src="js/weather.js"></script>
   <script defer src="js/vault.js?v=1"></script>
-  <script defer src="js/app.js?v=940"></script>
+  <script defer src="js/app.js?v=950"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=940')
+        navigator.serviceWorker.register('./sw.js?v=950')
           .then((reg) => {
             reg.update();
             console.log('Miravoya Service Worker active:', reg.scope);

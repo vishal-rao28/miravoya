@@ -151,8 +151,8 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles/tokens.css?v=960" />
-  <link rel="stylesheet" href="styles/main.css?v=960" />
+  <link rel="stylesheet" href="styles/tokens.css?v=970" />
+  <link rel="stylesheet" href="styles/main.css?v=970" />
   <script>
     (function () {
       try {
@@ -898,30 +898,12 @@
         </section>
 
         <!-- ==================================================================
-           INNOVATION B: 12-MONTH "WHEN TO GO" WEATHER HEATMAP
-           ================================================================== -->
-        <section id="season-matrix-section" class="section-block reveal" aria-labelledby="heatmap-title">
-          <div class="section-head">
-            <div>
-              <div class="eyebrow">03 / Weather Heatmap</div>
-              <h2 id="heatmap-title" class="section-title">12-Month Season Matrix</h2>
-              <p id="heatmap-heading" class="section-desc">Select any month to evaluate peak weather conditions across all destinations.</p>
-            </div>
-          </div>
-
-          <div class="panel-card">
-            <div id="heatmap-months" class="month-strip" role="tablist" aria-label="Select travel month"></div>
-            <div id="heatmap-results" class="heatmap-grid"></div>
-          </div>
-        </section>
-
-        <!-- ==================================================================
-           SECTION 2: OFFICIAL MULTI-MODAL BOOKING STUDIO + 3 ANIMATED PASSES
+           TOP TOPIC 3: OFFICIAL MULTI-MODAL BOOKING STUDIO + 3 ANIMATED PASSES
            ================================================================== -->
         <section id="book-section" class="section-block reveal" aria-labelledby="book-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">04 / Booking Studio</div>
+              <div class="eyebrow">03 / Booking Studio</div>
               <h2 id="book-title" class="section-title">Flights, Stays &amp; Rail Booking Studio</h2>
               <p class="section-desc">Configure travel criteria to preview a digital Boarding Pass, Hotel Keycard, or Rail Ticket with direct official reservation links.</p>
             </div>
@@ -985,30 +967,12 @@
         </section>
 
         <!-- ==================================================================
-           SECTION 3: SIDE-BY-SIDE DESTINATION COMPARATOR
-           ================================================================== -->
-        <section id="compare-section" class="section-block reveal" aria-labelledby="compare-title">
-          <div class="section-head">
-            <div>
-              <div class="eyebrow">05 / Destination Comparator</div>
-              <h2 id="compare-title" class="section-title">Compare Destinations Side-by-Side</h2>
-              <p class="section-desc">Evaluate daily cost, safety index, nomad Wi-Fi speed, flight time, weather, and
-                visa
-                requirements at a glance.</p>
-            </div>
-            <a href="#explore-section" class="btn btn-sm">+ Pick Cities from Explore</a>
-          </div>
-
-          <div id="compare-grid" class="compare-grid"></div>
-        </section>
-
-        <!-- ==================================================================
-           SECTION 4: INTERACTIVE TIMELINE & VISUAL TRIP ROADMAP DESIGNER
+           TOP TOPIC 4: INTERACTIVE TIMELINE & VISUAL TRIP ROADMAP DESIGNER
            ================================================================== -->
         <section id="roadmap-section" class="section-block reveal" aria-labelledby="roadmap-title">
           <div class="section-head">
             <div>
-              <div class="eyebrow">06 / Roadmap Planner</div>
+              <div class="eyebrow">04 / Journey Roadmap Architect</div>
               <h2 id="roadmap-title" class="section-title">Day-by-Day Journey Roadmap</h2>
               <p id="roadmap-summary" class="section-desc">Customize your day-by-day route, reorder stops, track costs,
                 and export your itinerary.</p>
@@ -1072,6 +1036,42 @@
               </form>
             </aside>
           </div>
+        </section>
+
+        <!-- ==================================================================
+           MORE TOPIC 5: 12-MONTH "WHEN TO GO" WEATHER HEATMAP
+           ================================================================== -->
+        <section id="season-matrix-section" class="section-block reveal" aria-labelledby="heatmap-title">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">05 / Weather Heatmap &amp; Season Matrix</div>
+              <h2 id="heatmap-title" class="section-title">12-Month Season Matrix</h2>
+              <p id="heatmap-heading" class="section-desc">Select any month to evaluate peak weather conditions across all destinations.</p>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div id="heatmap-months" class="month-strip" role="tablist" aria-label="Select travel month"></div>
+            <div id="heatmap-results" class="heatmap-grid"></div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+           MORE TOPIC 6: SIDE-BY-SIDE DESTINATION COMPARATOR
+           ================================================================== -->
+        <section id="compare-section" class="section-block reveal" aria-labelledby="compare-title">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">06 / Destination Comparator</div>
+              <h2 id="compare-title" class="section-title">Compare Destinations Side-by-Side</h2>
+              <p class="section-desc">Evaluate daily cost, safety index, nomad Wi-Fi speed, flight time, weather, and
+                visa
+                requirements at a glance.</p>
+            </div>
+            <a href="#explore-section" class="btn btn-sm">+ Pick Cities from Explore</a>
+          </div>
+
+          <div id="compare-grid" class="compare-grid"></div>
         </section>
 
         <!-- ==================================================================
@@ -2313,11 +2313,11 @@
   <script defer src="js/extras.js?v=6"></script>
   <script defer src="js/weather.js"></script>
   <script defer src="js/vault.js?v=1"></script>
-  <script defer src="js/app.js?v=960"></script>
+  <script defer src="js/app.js?v=970"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=960')
+        navigator.serviceWorker.register('./sw.js?v=970')
           .then((reg) => {
             reg.update();
             console.log('Miravoya Service Worker active:', reg.scope);

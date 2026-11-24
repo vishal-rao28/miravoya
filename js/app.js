@@ -2256,6 +2256,7 @@
     initTravelPreloaderAndScrollPlane();
     initInteractivePolish();
     initNavMoreDropdown();
+    initSmartNavScroll();
     initMobileNavigation();
     initSpotlightCommandPalette();
     initSurpriseRoulette();
@@ -2312,10 +2313,14 @@
             if (entry.isIntersecting) {
               const id = `#${entry.target.id}`;
               navLinks.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === id));
+              const plainId = entry.target.id;
+              document.querySelectorAll('.mobile-bottom-bar [data-mbb-target]').forEach((m) => {
+                m.classList.toggle('is-active', m.dataset.mbbTarget === plainId);
+              });
             }
           });
         },
-        { rootMargin: '-28% 0px -56% 0px', threshold: 0.01 }
+        { rootMargin: '-25% 0px -55% 0px', threshold: 0.01 }
       );
       sections.forEach((s) => spy.observe(s.el));
     }
@@ -2387,6 +2392,77 @@
         toggleMenu(false);
         btn.focus();
       }
+    });
+  }
+
+  /* ------------------------------------------------------------------------
+     5c. Smart Precision Navigation & Mobile Smooth Scrolling Engine
+     ------------------------------------------------------------------------ */
+  function initSmartNavScroll() {
+    const allLinks = document.querySelectorAll(
+      '.nav-links a[href^="#"], .mobile-drawer-link[href^="#"], .mobile-bottom-bar a[href^="#"], .dropdown-menu-item[href^="#"]'
+    );
+
+    allLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        const hash = link.getAttribute('href');
+        if (!hash || hash === '#' || hash === '#top') {
+          if (hash === '#top') {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+          return;
+        }
+
+        const target = document.querySelector(hash);
+        if (!target) return;
+
+        e.preventDefault();
+
+        // Update URL hash smoothly without browser jumping
+        if (history.pushState) {
+          history.pushState(null, null, hash);
+        }
+
+        // Close mobile drawer if open
+        const drawer = document.getElementById('mobile-nav-drawer');
+        if (drawer && !drawer.hasAttribute('hidden')) {
+          drawer.setAttribute('hidden', '');
+          document.body.classList.remove('mobile-drawer-open');
+          document.getElementById('mobile-menu-toggle-btn')?.classList.remove('is-active');
+          document.getElementById('mobile-menu-toggle-btn')?.setAttribute('aria-expanded', 'false');
+        }
+
+        // Close more dropdown if open
+        const moreWrap = document.getElementById('nav-more-dropdown-wrap');
+        if (moreWrap) {
+          moreWrap.classList.remove('is-open');
+          document.getElementById('nav-more-btn')?.setAttribute('aria-expanded', 'false');
+        }
+
+        // Ensure target is fully visible
+        target.classList.add('is-visible');
+
+        // Dynamic sticky nav height calculation with safety margin
+        const navEl = document.querySelector('.site-nav');
+        const navHeight = navEl ? navEl.offsetHeight : 84;
+        const targetTop = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 12;
+
+        window.scrollTo({
+          top: Math.max(0, targetTop),
+          behavior: 'smooth'
+        });
+
+        // Synchronize active highlights across all navigation components
+        document.querySelectorAll('.nav-links .nav-link').forEach((a) => {
+          a.classList.toggle('is-active', a.getAttribute('href') === hash);
+        });
+
+        const idWithoutHash = hash.replace('#', '');
+        document.querySelectorAll('.mobile-bottom-bar [data-mbb-target]').forEach((m) => {
+          m.classList.toggle('is-active', m.dataset.mbbTarget === idWithoutHash);
+        });
+      });
     });
   }
 

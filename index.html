@@ -151,8 +151,8 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles/tokens.css?v=980" />
-  <link rel="stylesheet" href="styles/main.css?v=980" />
+  <link rel="stylesheet" href="styles/tokens.css?v=1000" />
+  <link rel="stylesheet" href="styles/main.css?v=1000" />
   <script>
     (function () {
       try {
@@ -179,6 +179,14 @@
   <!-- Cinematic Custom-Emblem Travel Opening Preloader with "Behold the Journey" Poetic Reveal -->
   <div id="travel-preloader" class="travel-preloader" aria-hidden="true" title="Click to enter Miravoya">
     <div class="preloader-cosmic-glow"></div>
+    <div class="preloader-stars" aria-hidden="true">
+      <span class="p-star p-star-1"></span>
+      <span class="p-star p-star-2"></span>
+      <span class="p-star p-star-3"></span>
+      <span class="p-star p-star-4"></span>
+      <span class="p-star p-star-5"></span>
+      <span class="p-star p-star-6"></span>
+    </div>
     <div class="tv-loader-stage">
       <div class="tv-loader-halo"></div>
       <svg class="tv-loader-svg" viewBox="0 0 160 160" width="144" height="144" fill="none">
@@ -245,15 +253,23 @@
 
       <!-- Poetic Meaning Transformation Stage: Behold the Journey -->
       <div class="preloader-meaning-wrap" id="preloader-meaning">
-        <div class="preloader-meaning-tag">MIRA (BEHOLD) · VOYA (THE JOURNEY)</div>
-        <div class="preloader-meaning-title">Behold the Journey</div>
-        <div class="preloader-meaning-sub">Global Travel Studio &amp; Route Architect</div>
+        <div class="preloader-meaning-inner">
+          <div class="preloader-meaning-tag">MIRA (BEHOLD) · VOYA (THE JOURNEY)</div>
+          <div class="preloader-meaning-title">Behold the Journey</div>
+          <div class="preloader-meaning-sub">Global Travel Studio &amp; Route Architect</div>
+        </div>
       </div>
 
       <div id="preloader-status" class="tv-loader-telemetry">CALIBRATING MERIDIANS · 45 DESTINATIONS</div>
     </div>
-    <div class="preloader-bar">
-      <div class="preloader-bar-fill"></div>
+    <div class="preloader-bar-wrap">
+      <div class="preloader-bar">
+        <div class="preloader-bar-fill" id="preloader-bar-fill"></div>
+      </div>
+      <div class="preloader-meta-row">
+        <span class="preloader-coords" id="preloader-coords">28°36'N · 77°12'E</span>
+        <span class="preloader-pct" id="preloader-pct">0%</span>
+      </div>
     </div>
   </div>
 
@@ -2316,11 +2332,11 @@
   <script defer src="js/extras.js?v=6"></script>
   <script defer src="js/weather.js"></script>
   <script defer src="js/vault.js?v=1"></script>
-  <script defer src="js/app.js?v=990"></script>
+  <script defer src="js/app.js?v=1000"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=990')
+        navigator.serviceWorker.register('./sw.js?v=1000')
           .then((reg) => {
             reg.update();
             console.log('Miravoya Service Worker active:', reg.scope);

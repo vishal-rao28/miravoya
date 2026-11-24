@@ -1922,62 +1922,119 @@
     const statusEl = document.getElementById('preloader-status');
     const meaningWrap = document.getElementById('preloader-meaning');
     const brandEl = document.getElementById('preloader-brand');
+    const fillEl = document.getElementById('preloader-bar-fill');
+    const pctEl = document.getElementById('preloader-pct');
 
     if (preloader) {
-      if (statusEl) {
-        statusEl.textContent = 'CALIBRATING MERIDIANS · 45 DESTINATIONS';
+      let isSkipped = false;
+      let startTs = null;
+      const duration = 2100; // ms for full cinematic reveal
+
+      let hasRevealedMeaning = false;
+      let hasRevealedReady = false;
+
+      // Quintic ease-out curve for luxury deceleration
+      function easeOutQuint(x) {
+        return 1 - Math.pow(1 - x, 4.5);
       }
 
-      // 1. Reveal "Behold the Journey" (the true meaning of Miravoya)
-      setTimeout(() => {
-        if (meaningWrap) {
-          meaningWrap.classList.add('is-visible');
-        }
-        if (brandEl) {
-          brandEl.style.transform = 'translateY(-3px) scale(0.92)';
-          brandEl.style.opacity = '0.92';
-        }
-        if (statusEl) {
-          statusEl.textContent = '✦ BEHOLD THE JOURNEY ✦ · WELCOME TO MIRAVOYA';
-          statusEl.style.color = '#fef08a';
-        }
-      }, 720);
-
-      // 2. Ready for Departure
-      setTimeout(() => {
-        if (statusEl) {
-          statusEl.textContent = 'DEPARTURE READY ✈ ARCHITECT YOUR JOURNEY';
-          statusEl.style.color = '#38bdf8';
-        }
-      }, 1650);
-
-      // 3. Seamless Cinematic Portal Transition to Homepage
-      setTimeout(() => {
+      function finishPreloader() {
+        if (preloader.classList.contains('is-done')) return;
         preloader.classList.add('is-done');
-      }, 2400);
+        document.body.classList.add('app-loaded');
+      }
 
-      // Tap / Click to enter immediately
-      preloader.addEventListener('click', () => {
-        preloader.classList.add('is-done');
-      });
+      function tickPreload(now) {
+        if (!startTs) startTs = now;
+        const elapsed = now - startTs;
+        const linearP = isSkipped ? 1 : Math.min(1, elapsed / duration);
+        const p = isSkipped ? 1 : easeOutQuint(linearP);
+        const pctInt = Math.min(100, Math.round(p * 100));
+
+        if (fillEl) fillEl.style.width = (p * 100).toFixed(1) + '%';
+        if (pctEl) pctEl.textContent = pctInt + '%';
+
+        // Stage 1: Reveal "Behold the Journey" at ~32%
+        if (p >= 0.32 && !hasRevealedMeaning) {
+          hasRevealedMeaning = true;
+          if (meaningWrap) meaningWrap.classList.add('is-visible');
+          if (brandEl) {
+            brandEl.style.transform = 'translateY(-2px) scale(0.94)';
+            brandEl.style.opacity = '0.94';
+          }
+          if (statusEl) {
+            statusEl.textContent = '✦ BEHOLD THE JOURNEY ✦ · WELCOME TO MIRAVOYA';
+            statusEl.style.color = '#fef08a';
+          }
+        }
+
+        // Stage 2: Ready for Departure at ~78%
+        if (p >= 0.78 && !hasRevealedReady) {
+          hasRevealedReady = true;
+          if (statusEl) {
+            statusEl.textContent = '✦ EXPEDITION READY ✈ ARCHITECT YOUR JOURNEY ✦';
+            statusEl.style.color = '#38bdf8';
+          }
+        }
+
+        // Stage 3: Smooth dissolve portal at 100%
+        if (linearP < 1 && !isSkipped) {
+          requestAnimationFrame(tickPreload);
+        } else {
+          setTimeout(finishPreloader, isSkipped ? 100 : 260);
+        }
+      }
+
+      requestAnimationFrame(tickPreload);
+
+      // Instant skip on tap/click or keyboard press with buttery fade
+      const onSkip = () => {
+        if (isSkipped) return;
+        isSkipped = true;
+        if (meaningWrap) meaningWrap.classList.add('is-visible');
+        if (fillEl) fillEl.style.width = '100%';
+        if (pctEl) pctEl.textContent = '100%';
+        finishPreloader();
+      };
+
+      preloader.addEventListener('click', onSkip, { once: true });
+      window.addEventListener('keydown', onSkip, { once: true });
     }
 
-    const fill = document.getElementById('scroll-flight-fill');
-    const plane = document.getElementById('scroll-flight-plane');
-    if (fill && plane) {
-      let rafId = null;
-      const updateBar = () => {
-        rafId = null;
+    // Ultra-smooth Damped Scroll Jet Airplane
+    const sFill = document.getElementById('scroll-flight-fill');
+    const sPlane = document.getElementById('scroll-flight-plane');
+    if (sFill && sPlane) {
+      let targetPct = 0;
+      let currentPct = 0;
+      let isAnimating = false;
+
+      function loopScrollFlight() {
+        const diff = targetPct - currentPct;
+        if (Math.abs(diff) > 0.04) {
+          currentPct += diff * 0.24; // Silky inertia spring damping
+          sFill.style.width = currentPct.toFixed(2) + '%';
+          sPlane.style.left = currentPct.toFixed(2) + '%';
+          requestAnimationFrame(loopScrollFlight);
+        } else {
+          currentPct = targetPct;
+          sFill.style.width = currentPct.toFixed(2) + '%';
+          sPlane.style.left = currentPct.toFixed(2) + '%';
+          isAnimating = false;
+        }
+      }
+
+      const updateScrollTarget = () => {
         const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-        const pct = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
-        fill.style.width = `${pct.toFixed(2)}%`;
-        plane.style.left = `${pct.toFixed(2)}%`;
+        targetPct = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
+        if (!isAnimating) {
+          isAnimating = true;
+          requestAnimationFrame(loopScrollFlight);
+        }
       };
-      const onScroll = () => {
-        if (!rafId) rafId = requestAnimationFrame(updateBar);
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      updateBar();
+
+      window.addEventListener('scroll', updateScrollTarget, { passive: true });
+      updateScrollTarget();
     }
   }
 

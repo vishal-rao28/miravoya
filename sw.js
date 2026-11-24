@@ -4,7 +4,7 @@
    so travel itineraries, packing lists, and phrasebooks work offline.
    ========================================================================== */
 
-const CACHE_NAME = 'miravoya-v5.9.0';
+const CACHE_NAME = 'miravoya-v6.0.0';
 const CORE_ASSETS = [
   './',
   './index.html',

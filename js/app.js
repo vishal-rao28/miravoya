@@ -2250,6 +2250,7 @@
     initTravelPreloaderAndScrollPlane();
     initInteractivePolish();
     initNavMoreDropdown();
+    initMobileNavigation();
     initSpotlightCommandPalette();
     initSurpriseRoulette();
     initFlightTrajectory();
@@ -3150,5 +3151,140 @@
     document.getElementById('dock-top-btn')?.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+  }
+
+  /* ------------------------------------------------------------------------
+     Mobile Responsive Navigation Engine (Drawer + Bottom Sticky Bar)
+     ------------------------------------------------------------------------ */
+  function initMobileNavigation() {
+    const toggleBtn = document.getElementById('mobile-menu-toggle-btn');
+    const drawer = document.getElementById('mobile-nav-drawer');
+    const backdrop = document.getElementById('mobile-drawer-backdrop');
+    const closeBtn = document.getElementById('mobile-drawer-close-btn');
+    const mbbMenuBtn = document.getElementById('mbb-menu-btn');
+    const mobileCurrSelect = document.getElementById('mobile-currency-select');
+    const desktopCurrSelect = document.getElementById('currency-select');
+
+    if (!drawer) return;
+
+    function openDrawer() {
+      drawer.removeAttribute('hidden');
+      toggleBtn?.classList.add('is-active');
+      toggleBtn?.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('mobile-drawer-open');
+    }
+
+    function closeDrawer() {
+      drawer.setAttribute('hidden', '');
+      toggleBtn?.classList.remove('is-active');
+      toggleBtn?.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('mobile-drawer-open');
+    }
+
+    function toggleDrawer() {
+      if (drawer.hasAttribute('hidden')) {
+        openDrawer();
+      } else {
+        closeDrawer();
+      }
+    }
+
+    toggleBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleDrawer();
+    });
+
+    mbbMenuBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleDrawer();
+    });
+
+    backdrop?.addEventListener('click', closeDrawer);
+    closeBtn?.addEventListener('click', closeDrawer);
+
+    // Close on navigation link click
+    drawer.querySelectorAll('[data-close-drawer]').forEach((link) => {
+      link.addEventListener('click', () => {
+        closeDrawer();
+      });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !drawer.hasAttribute('hidden')) {
+        closeDrawer();
+      }
+    });
+
+    // Drawer action cards
+    document.getElementById('mobile-drawer-roulette-btn')?.addEventListener('click', () => {
+      closeDrawer();
+      window.Miravoya.openSurpriseRoulette?.();
+    });
+
+    document.getElementById('mobile-drawer-trajectory-btn')?.addEventListener('click', () => {
+      closeDrawer();
+      window.Miravoya.openFlightTrajectory?.();
+    });
+
+    document.getElementById('mobile-drawer-spotlight-btn')?.addEventListener('click', () => {
+      closeDrawer();
+      document.getElementById('spotlight-backdrop')?.classList.add('is-open');
+      const inp = document.getElementById('spotlight-input');
+      if (inp) {
+        inp.value = '';
+        setTimeout(() => inp.focus(), 40);
+      }
+    });
+
+    document.getElementById('mobile-drawer-theme-btn')?.addEventListener('click', (e) => {
+      window.toggleMiravoyaTheme?.(e.currentTarget);
+    });
+
+    // Bidirectional currency sync
+    if (mobileCurrSelect && desktopCurrSelect) {
+      mobileCurrSelect.value = state.currency || desktopCurrSelect.value || 'INR';
+
+      mobileCurrSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        desktopCurrSelect.value = val;
+        state.currency = val;
+        saveState();
+        renderExplore();
+        renderComparator();
+        renderBookingOffers();
+        plannerApi?.renderToolkit();
+        notify(`Currency switched to ${val}`);
+      });
+
+      desktopCurrSelect.addEventListener('change', (e) => {
+        mobileCurrSelect.value = e.target.value;
+      });
+    }
+
+    // Mobile Bottom Bar active highlight on scroll
+    const sections = ['explore-section', 'dna-section', 'book-section', 'roadmap-section'];
+    const mbbLinks = document.querySelectorAll('.mobile-bottom-bar [data-mbb-target]');
+
+    if ('IntersectionObserver' in window && mbbLinks.length) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const id = entry.target.id;
+              mbbLinks.forEach((link) => {
+                link.classList.toggle('is-active', link.dataset.mbbTarget === id);
+              });
+            }
+          });
+        },
+        { rootMargin: '-20% 0px -60% 0px', threshold: 0 }
+      );
+
+      sections.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+    }
   }
 }) ();

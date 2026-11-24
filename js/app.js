@@ -635,6 +635,7 @@
   function renderExplore() {
     const grid = document.getElementById('dest-grid');
     if (!grid) return;
+    document.getElementById('explore-section')?.classList.add('is-visible');
 
     const q = state.search.trim().toLowerCase();
     const isBrandSearch = q === 'miravoya' || q === 'mira' || q.includes('miravoya');
@@ -1963,6 +1964,11 @@
 
   function initScrollReveal() {
     const els = document.querySelectorAll('.reveal');
+    // Ensure all critical sections are immediately marked visible
+    document.querySelectorAll('#explore-section, #dna-section').forEach((el) => {
+      el.classList.add('is-visible');
+    });
+
     if (!('IntersectionObserver' in window)) {
       els.forEach((el) => el.classList.add('is-visible'));
       return;
@@ -1976,7 +1982,7 @@
           }
         });
       },
-      { threshold: 0.06 }
+      { threshold: 0, rootMargin: '180px 0px 180px 0px' }
     );
     els.forEach((el) => io.observe(el));
   }

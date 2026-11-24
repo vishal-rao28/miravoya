@@ -151,8 +151,8 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles/tokens.css?v=950" />
-  <link rel="stylesheet" href="styles/main.css?v=950" />
+  <link rel="stylesheet" href="styles/tokens.css?v=960" />
+  <link rel="stylesheet" href="styles/main.css?v=960" />
   <script>
     (function () {
       try {
@@ -796,7 +796,7 @@
       <!-- ==================================================================
            SECTION 1: EXPLORE DESTINATIONS (TAMIL NADU · INDIA · OTHER COUNTRIES)
            ================================================================== -->
-      <section id="explore-section" class="section-block reveal" aria-labelledby="explore-title">
+      <section id="explore-section" class="section-block is-visible" aria-labelledby="explore-title">
           <div class="section-head">
             <div>
               <div class="eyebrow">01 · Discover Tamil Nadu, India & The World</div>
@@ -2313,11 +2313,11 @@
   <script defer src="js/extras.js?v=6"></script>
   <script defer src="js/weather.js"></script>
   <script defer src="js/vault.js?v=1"></script>
-  <script defer src="js/app.js?v=950"></script>
+  <script defer src="js/app.js?v=960"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=950')
+        navigator.serviceWorker.register('./sw.js?v=960')
           .then((reg) => {
             reg.update();
             console.log('Miravoya Service Worker active:', reg.scope);

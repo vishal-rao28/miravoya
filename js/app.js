@@ -3281,6 +3281,15 @@
       toggleDrawer();
     });
 
+    // On mobile screens, tapping "More ▾" in the top bar toggles the More drawer
+    document.getElementById('nav-more-btn')?.addEventListener('click', (e) => {
+      if (window.innerWidth <= 820) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleDrawer();
+      }
+    });
+
     backdrop?.addEventListener('click', closeDrawer);
     closeBtn?.addEventListener('click', closeDrawer);
 

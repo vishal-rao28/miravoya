@@ -151,8 +151,8 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles/tokens.css?v=970" />
-  <link rel="stylesheet" href="styles/main.css?v=970" />
+  <link rel="stylesheet" href="styles/tokens.css?v=980" />
+  <link rel="stylesheet" href="styles/main.css?v=980" />
   <script>
     (function () {
       try {
@@ -445,8 +445,8 @@
           <span class="glass-toggle-label" id="theme-mode-text">Dark</span>
         </button>
 
-        <!-- Mobile Menu Hamburger Button -->
-        <button type="button" id="mobile-menu-toggle-btn" class="mobile-menu-toggle-btn" aria-label="Toggle Navigation Menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+        <!-- Mobile More Hamburger Button -->
+        <button type="button" id="mobile-menu-toggle-btn" class="mobile-menu-toggle-btn" aria-label="Toggle More Menu" title="More Tools &amp; Pages" aria-expanded="false" aria-controls="mobile-nav-drawer">
           <span class="hamburger-bar bar-1"></span>
           <span class="hamburger-bar bar-2"></span>
           <span class="hamburger-bar bar-3"></span>
@@ -509,7 +509,7 @@
   <!-- ======================================================================
        LUXURY MOBILE NAVIGATION DRAWER & EXPANDED ACTION HUB
        ====================================================================== -->
-  <div id="mobile-nav-drawer" class="mobile-nav-drawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation Menu" hidden>
+  <div id="mobile-nav-drawer" class="mobile-nav-drawer" role="dialog" aria-modal="true" aria-label="More Travel Studios and Tools" hidden>
     <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop"></div>
     <div class="mobile-drawer-panel">
       <div class="mobile-drawer-header">
@@ -523,7 +523,7 @@
           </span>
           <div class="mobile-drawer-brand-text">
             <span class="brand-name">Miravoya</span>
-            <span class="brand-sub">Global Travel Studio</span>
+            <span class="brand-sub">More Studios &amp; Tools</span>
           </div>
         </div>
         <div class="mobile-drawer-header-actions">
@@ -531,45 +531,13 @@
             <span class="sync-dot"></span>
             <span>Live</span>
           </div>
-          <button type="button" id="mobile-drawer-close-btn" class="mobile-drawer-close-btn" aria-label="Close navigation menu">✕</button>
+          <button type="button" id="mobile-drawer-close-btn" class="mobile-drawer-close-btn" aria-label="Close More Tools">✕</button>
         </div>
       </div>
 
       <div class="mobile-drawer-body">
-        <div class="mobile-drawer-section-label">PRIMARY HUBS</div>
-        <nav class="mobile-drawer-links" aria-label="Mobile primary navigation">
-          <a class="mobile-drawer-link" href="#explore-section" data-close-drawer>
-            <span class="mdl-icon">🧭</span>
-            <div class="mdl-info">
-              <span class="mdl-title">Explore Destinations</span>
-              <span class="mdl-desc">45 places across TN, India &amp; World</span>
-            </div>
-            <span class="mdl-arrow">›</span>
-          </a>
-          <a class="mobile-drawer-link" href="#dna-section" data-close-drawer>
-            <span class="mdl-icon">🧬</span>
-            <div class="mdl-info">
-              <span class="mdl-title">Smart Trip DNA</span>
-              <span class="mdl-desc">Soulmate matching by vibe, budget &amp; pace</span>
-            </div>
-            <span class="mdl-arrow">›</span>
-          </a>
-          <a class="mobile-drawer-link" href="#book-section" data-close-drawer>
-            <span class="mdl-icon">🎫</span>
-            <div class="mdl-info">
-              <span class="mdl-title">Booking Studio &amp; Passes</span>
-              <span class="mdl-desc">Flights, stays, rail &amp; digital boarding pass</span>
-            </div>
-            <span class="mdl-arrow">›</span>
-          </a>
-          <a class="mobile-drawer-link" href="#roadmap-section" data-close-drawer>
-            <span class="mdl-icon">🗺️</span>
-            <div class="mdl-info">
-              <span class="mdl-title">Journey Roadmap</span>
-              <span class="mdl-desc">Day-by-day interactive itinerary builder</span>
-            </div>
-            <span class="mdl-arrow">›</span>
-          </a>
+        <div class="mobile-drawer-section-label">MORE TRAVEL TOOLS &amp; STUDIOS</div>
+        <nav class="mobile-drawer-links" aria-label="More travel tools and studios">
           <a class="mobile-drawer-link" href="#season-matrix-section" data-close-drawer>
             <span class="mdl-icon">🗓️</span>
             <div class="mdl-info">
@@ -599,6 +567,30 @@
             <div class="mdl-info">
               <span class="mdl-title">Road Trips &amp; Split Bill</span>
               <span class="mdl-desc">Fuel estimation &amp; shared group expenses</span>
+            </div>
+            <span class="mdl-arrow">›</span>
+          </a>
+          <a class="mobile-drawer-link" href="#journal-section" data-close-drawer>
+            <span class="mdl-icon">📖</span>
+            <div class="mdl-info">
+              <span class="mdl-title">Travel Journal &amp; Logs</span>
+              <span class="mdl-desc">Personal notes, day-by-day logs &amp; memory vault</span>
+            </div>
+            <span class="mdl-arrow">›</span>
+          </a>
+          <a class="mobile-drawer-link" href="#readiness-section" data-close-drawer>
+            <span class="mdl-icon">🛡️</span>
+            <div class="mdl-info">
+              <span class="mdl-title">Pre-Flight Readiness</span>
+              <span class="mdl-desc">Emergency helplines, docs audit &amp; checklist</span>
+            </div>
+            <span class="mdl-arrow">›</span>
+          </a>
+          <a class="mobile-drawer-link" href="#trips-section" data-close-drawer>
+            <span class="mdl-icon">🎟️</span>
+            <div class="mdl-info">
+              <span class="mdl-title">Reserved Passes &amp; Trips</span>
+              <span class="mdl-desc">Saved official booking passes &amp; trip links</span>
             </div>
             <span class="mdl-arrow">›</span>
           </a>
@@ -2270,9 +2262,9 @@
       <span class="mbb-icon">🗺️</span>
       <span class="mbb-label">Roadmap</span>
     </a>
-    <button type="button" id="mbb-menu-btn" class="mbb-item mbb-menu-trigger" aria-label="Open navigation menu">
+    <button type="button" id="mbb-menu-btn" class="mbb-item mbb-menu-trigger" aria-label="Open More travel tools">
       <span class="mbb-icon">✨</span>
-      <span class="mbb-label">Menu</span>
+      <span class="mbb-label">More</span>
     </button>
   </nav>
 
@@ -2296,7 +2288,7 @@
         <span class="dock-tooltip">Switch Theme</span>
       </button>
       <div class="dock-divider"></div>
-      <button type="button" class="dock-btn" id="dock-top-btn" title="Scroll to Top">
+      <button type="button" id="dock-top-btn" class="dock-btn" title="Scroll to Top">
         <span class="dock-icon" aria-hidden="true">↑</span>
         <span class="dock-tooltip">Top</span>
       </button>
@@ -2313,11 +2305,11 @@
   <script defer src="js/extras.js?v=6"></script>
   <script defer src="js/weather.js"></script>
   <script defer src="js/vault.js?v=1"></script>
-  <script defer src="js/app.js?v=970"></script>
+  <script defer src="js/app.js?v=980"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=970')
+        navigator.serviceWorker.register('./sw.js?v=980')
           .then((reg) => {
             reg.update();
             console.log('Miravoya Service Worker active:', reg.scope);

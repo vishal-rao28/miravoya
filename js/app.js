@@ -1920,16 +1920,46 @@
   function initTravelPreloaderAndScrollPlane() {
     const preloader = document.getElementById('travel-preloader');
     const statusEl = document.getElementById('preloader-status');
+    const meaningWrap = document.getElementById('preloader-meaning');
+    const brandEl = document.getElementById('preloader-brand');
+
     if (preloader) {
       if (statusEl) {
-        setTimeout(() => {
-          statusEl.textContent = 'SYNCING 270+ ULTRA-HD LANDMARKS';
-        }, 380);
-        setTimeout(() => {
-          statusEl.textContent = 'READY FOR DEPARTURE ✈';
-        }, 780);
+        statusEl.textContent = 'CALIBRATING MERIDIANS · 45 DESTINATIONS';
       }
-      setTimeout(() => preloader.classList.add('is-done'), 1120);
+
+      // 1. Reveal "Behold the Journey" (the true meaning of Miravoya)
+      setTimeout(() => {
+        if (meaningWrap) {
+          meaningWrap.classList.add('is-visible');
+        }
+        if (brandEl) {
+          brandEl.style.transform = 'translateY(-3px) scale(0.92)';
+          brandEl.style.opacity = '0.92';
+        }
+        if (statusEl) {
+          statusEl.textContent = '✦ BEHOLD THE JOURNEY ✦ · WELCOME TO MIRAVOYA';
+          statusEl.style.color = '#fef08a';
+        }
+      }, 720);
+
+      // 2. Ready for Departure
+      setTimeout(() => {
+        if (statusEl) {
+          statusEl.textContent = 'DEPARTURE READY ✈ ARCHITECT YOUR JOURNEY';
+          statusEl.style.color = '#38bdf8';
+        }
+      }, 1650);
+
+      // 3. Seamless Cinematic Portal Transition to Homepage
+      setTimeout(() => {
+        preloader.classList.add('is-done');
+      }, 2400);
+
+      // Tap / Click to enter immediately
+      preloader.addEventListener('click', () => {
+        preloader.classList.add('is-done');
+      });
     }
 
     const fill = document.getElementById('scroll-flight-fill');

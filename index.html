@@ -2305,11 +2305,11 @@
   <script defer src="js/extras.js?v=6"></script>
   <script defer src="js/weather.js"></script>
   <script defer src="js/vault.js?v=1"></script>
-  <script defer src="js/app.js?v=980"></script>
+  <script defer src="js/app.js?v=990"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=980')
+        navigator.serviceWorker.register('./sw.js?v=990')
           .then((reg) => {
             reg.update();
             console.log('Miravoya Service Worker active:', reg.scope);

@@ -4152,98 +4152,175 @@ body {
 
 
 /* ==========================================================================
-   CINEMATIC TRAVEL PRELOADER & SCROLL FLIGHT PROGRESS BAR
+   CINEMATIC "BEHOLD THE JOURNEY" PRELOADER SUITE
    ========================================================================== */
 .travel-preloader {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: #0b0d14;
+  background: radial-gradient(ellipse at 50% 45%, #091724 0%, #040c12 65%, #020609 100%);
   color: #faf7f2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 18px;
-  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.35s;
+  padding: 24px;
+  cursor: pointer;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s ease, visibility 0.7s;
+  overflow: hidden;
 }
 
 .travel-preloader.is-done {
   opacity: 0;
+  transform: scale(1.06);
+  filter: blur(12px);
   visibility: hidden;
   pointer-events: none;
 }
 
-.preloader-orbit {
+.preloader-cosmic-glow {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244, 190, 79, 0.2) 0%, rgba(56, 189, 248, 0.12) 42%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  animation: cosmicGlowPulse 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes cosmicGlowPulse {
+  0% { transform: scale(0.85); opacity: 0.5; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+.preloader-text-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  width: 112px;
-  height: 112px;
-  display: grid;
-  place-items: center;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
 }
 
-.preloader-globe {
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 30%, #38bdf8, #0e5a6d 65%, #062530 100%);
-  box-shadow: 0 0 36px rgba(56, 189, 248, 0.38), inset -8px -8px 18px rgba(0, 0, 0, 0.45);
-  display: grid;
-  place-items: center;
-  font-size: 1.7rem;
+.tv-loader-wordmark {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 7vw, 3rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  transition: all 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 32px rgba(244, 190, 79, 0.4);
 }
 
-.preloader-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 2px dashed rgba(244, 190, 79, 0.65);
-  animation: orbitSpin 2.6s linear infinite;
+.tv-loader-wordmark .voya-part {
+  background: linear-gradient(105deg, #fef08a 0%, #f4be4f 55%, #fb923c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-style: italic;
+  font-weight: 700;
+  margin-left: 1px;
 }
 
-.preloader-jet {
-  position: absolute;
-  top: -11px;
-  left: 50%;
-  transform: translateX(-50%) rotate(90deg);
-  font-size: 1.25rem;
-  color: #f4be4f;
-  filter: drop-shadow(0 0 10px rgba(244, 190, 79, 0.85));
+.preloader-meaning-wrap {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(12px) scale(0.95);
+  transition: all 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+  margin-top: 0;
 }
 
-@keyframes orbitSpin {
-  from {
-    transform: rotate(0deg);
-  }
+.preloader-meaning-wrap.is-visible {
+  opacity: 1;
+  max-height: 160px;
+  transform: translateY(0) scale(1);
+  margin-top: 10px;
+}
 
-  to {
-    transform: rotate(360deg);
-  }
+.preloader-meaning-tag {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+  color: var(--teal, #38bdf8);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+  animation: tagShimmer 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes tagShimmer {
+  0% { border-color: rgba(56, 189, 248, 0.25); box-shadow: 0 0 10px rgba(56, 189, 248, 0.15); }
+  100% { border-color: rgba(244, 190, 79, 0.55); box-shadow: 0 0 20px rgba(244, 190, 79, 0.35); color: #fef08a; }
+}
+
+.preloader-meaning-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 5.5vw, 2.45rem);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  background: linear-gradient(110deg, #ffffff 0%, #fef08a 38%, #f4be4f 75%, #fb923c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 4px 28px rgba(244, 190, 79, 0.55);
+  margin-bottom: 4px;
+}
+
+.preloader-meaning-sub {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.tv-loader-telemetry {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  color: #7dd3fc;
+  margin-top: 14px;
+  text-transform: uppercase;
+  transition: color 0.4s ease, transform 0.4s ease;
 }
 
 .preloader-bar {
-  width: 190px;
+  width: 230px;
   height: 4px;
   border-radius: 99px;
   background: rgba(255, 255, 255, 0.14);
   overflow: hidden;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.6);
+  margin-top: 6px;
 }
 
 .preloader-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #f4be4f, #d95d39, #38bdf8);
-  animation: preloadFill 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  background: linear-gradient(90deg, #38bdf8 0%, #f4be4f 60%, #fb923c 100%);
+  animation: preloadFill 2.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  box-shadow: 0 0 14px rgba(244, 190, 79, 0.85);
 }
 
 @keyframes preloadFill {
-  from {
-    width: 0%;
-  }
-
-  to {
-    width: 100%;
-  }
+  0% { width: 0%; }
+  35% { width: 42%; }
+  70% { width: 82%; }
+  100% { width: 100%; }
 }
 
 /* Scroll-Journey Flying Plane Progress Bar under Navbar */
@@ -6533,31 +6610,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 }
 
-.tv-loader-wordmark {
-  font-family: var(--font-serif);
-  font-size: 1.85rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: #faf7f2;
-  animation: heroRiseIn 0.55s var(--ease) both;
-}
 
-.tv-loader-wordmark span {
-  background: linear-gradient(105deg, #fef08a, #f4be4f, #fb923c);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-style: italic;
-}
-
-.tv-loader-telemetry {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.16em;
-  color: #7dd3fc;
-  margin-top: 4px;
-  text-transform: uppercase;
-}
 
 /* Navbar ⌘K Spotlight Button */
 .cmd-k-btn {

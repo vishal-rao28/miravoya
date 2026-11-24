@@ -2186,6 +2186,44 @@ body {
   gap: 14px;
 }
 
+.footer-author-strip {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+}
+
+.footer-author-link {
+  color: var(--gold, #f4be4f);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.footer-author-link:hover {
+  color: #fef08a;
+  text-shadow: 0 0 10px rgba(244, 190, 79, 0.45);
+  text-decoration: underline;
+}
+
+.footer-dot {
+  opacity: 0.4;
+}
+
+.footer-social-link {
+  color: var(--teal, #38bdf8);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-social-link:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+}
+
 .toast {
   position: fixed;
   bottom: 24px;
